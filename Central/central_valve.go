@@ -1,18 +1,17 @@
 package main
 
 import (
-    "time"
-    "strconv"
-    "strings"
-    "math"
-    "math/rand"
-    "net"
-    "context"
-    "fmt"
-    "log"
-    "os"
-    "os/signal"
-    "sync"
+	"context"
+	"log"
+	"math/rand"
+	"os"
+	"strconv"
+	"strings"
+	"time"
+
+	pb "github.com/Sistemas-Distribuidos-2023-02/Grupo27-Laboratorio-1/protos"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 
@@ -30,12 +29,12 @@ func main() {
 
     min, _ := strconv.Atoi(rangoLlaves[0])
     max, _ := strconv.Atoi(rangoLlaves[1])
-    iterations, _ := strconv.Atoi(lineas[1])
+    //iterations, _ := strconv.Atoi(lineas[1])
     llaves := rand.Intn(max-min+1) + min
-    contador := 0
+    //contador := 0
 
 
-    if iterations == -1 {
+    /*if iterations == -1 {
         for {
             randomNumber := rand.Intn(max-min+1) + min
             contador++
@@ -48,7 +47,24 @@ func main() {
             contador++
             fmt.Printf("Generación %d/%d"\n, contador, iterations)
         }
-    }   
+    } */  
+    
+    addr:="dist@dist105.inf.santiago.usm.cl:50051"
+    conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewInteresadosClient(conn)
+
+	// Contact the server and print out its response.
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(llaves)})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("Verification: %s", r.GetResult())
 }
 
 
