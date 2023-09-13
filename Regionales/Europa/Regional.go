@@ -70,8 +70,10 @@ func main() {
 	    if err := s.Serve(lis); err != nil {
 	        log.Fatalf("failed to serve: %v", err)
 	    }
+        s.Stop()
         //Fin mensaje
-        if keys_available == true{
+        
+        if keys_available{
             log.Println("Llaves disponibles")
             //Usuarios interesados
             if txt == 0 {
