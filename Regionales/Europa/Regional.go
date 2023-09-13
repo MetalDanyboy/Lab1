@@ -35,7 +35,7 @@ func (s *server) Registrados(ctx context.Context, req *pb.NumberRequest) (*pb.Nu
 }
 
 func main() {
-    keys_available = true
+    keys_available = false
     name = "Europa"
     
     rand.Seed(time.Now().UnixNano())
@@ -78,7 +78,7 @@ func main() {
             log.Println("Llaves disponibles")
             //Usuarios interesados
             if txt == 0 {
-                content, err := os.ReadFile("parametros_de_inicio.txt")
+                content, err := os.ReadFile("parametros de inicio.txt")
                 if err != nil {
                     log.Fatal(err)
                 }
