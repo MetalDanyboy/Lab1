@@ -41,7 +41,8 @@ func main() {
             randomNumber := rand.Intn(max-min+1) + min
             contador++
             fmt.Printf("Generación %d/infinito\n", contador)
-
+            
+            //-------NOTIFICAR A REGIONALES-------
             //Mensaje sincrono gRPC
             addr:="dist105:50051"
             conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -62,6 +63,7 @@ func main() {
 
             conn.Close()
             cancel()
+            //-----------------------------
         }
         
     } else {

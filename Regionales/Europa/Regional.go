@@ -18,17 +18,19 @@ import (
 var llaves int
 var registrados int
 var numero int
+var name string
 
 type server struct{
     pb.UnimplementedInteresadosServer
 }
 
 func (s *server) Registrados(ctx context.Context, req *pb.NumberRequest) (*pb.NumberResponse, error) {
-    receivedNumber := req.GetNumber() 
-    return &pb.NumberResponse{Result: "Registrados: "+ strconv.Itoa(int(receivedNumber))}, nil
+    //receivedNumber := req.GetNumber() 
+    return &pb.NumberResponse{Result: name+": OK"}, nil
 }
 
 func main() {
+    name = "Europa"
     
     rand.Seed(time.Now().UnixNano())
     hostQ := "dist105"                                             

@@ -21,7 +21,7 @@ message UserRegionReply{ // Regional -> Central "ok"
 }
 
 message NumberRequest{
-  int64 number = 1;
+  string notification = 1;
 }
 
 message NumberResponse{
