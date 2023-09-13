@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	pb "github.com/Sistemas-Distribuidos-2023-02/Grupo27-Laboratorio-1/protos"
+	pb "github.com/MetalDanyboy/Lab1/protos"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -38,10 +38,10 @@ func main() {
 
     if iterations == -1 {
         for {
-            randomNumber := rand.Intn(max-min+1) + min
+            //randomNumber := rand.Intn(max-min+1) + min
             contador++
             fmt.Printf("Generación %d/infinito\n", contador)
-            
+
             //-------NOTIFICAR A REGIONALES-------
             //Mensaje sincrono gRPC
             addr:="dist105:50051"
@@ -55,7 +55,7 @@ func main() {
             // Contact the server and print out its response.
             ctx, cancel := context.WithTimeout(context.Background(), time.Second)
             //defer cancel()
-            r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(randomNumber)})
+            r, err := c.Registrados(ctx, &pb.NumberRequest{Notification: "I have Keys ..."})
             if err != nil {
                 log.Fatalf("could not greet: %v", err)
             }
@@ -68,7 +68,7 @@ func main() {
         
     } else {
         for i := 0; i < iterations; i++ {
-            randomNumber := rand.Intn(max-min+1) + min
+            //randomNumber := rand.Intn(max-min+1) + min
             contador++
             fmt.Printf("Generación %d/%d\n", contador, iterations)
 
@@ -84,7 +84,7 @@ func main() {
             // Contact the server and print out its response.
             ctx, cancel := context.WithTimeout(context.Background(), time.Second)
             defer cancel()
-            r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(randomNumber)})
+            r, err := c.Registrados(ctx, &pb.NumberRequest{Notification: "I have Keys ..."})
             if err != nil {
                 log.Fatalf("could not greet: %v", err)
             }
