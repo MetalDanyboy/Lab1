@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -29,43 +30,67 @@ func main() {
 
     min, _ := strconv.Atoi(rangoLlaves[0])
     max, _ := strconv.Atoi(rangoLlaves[1])
-    //iterations, _ := strconv.Atoi(lineas[1])
+    iterations, _ := strconv.Atoi(lineas[1])
     llaves := rand.Intn(max-min+1) + min
     log.Println("Llaves: %d\n", llaves)
-    //contador := 0
+    contador := 0
 
 
-    /*if iterations == -1 {
+    if iterations == -1 {
         for {
-            randomNumber := rand.Intn(max-min+1) + min
+            //randomNumber := rand.Intn(max-min+1) + min
             contador++
             fmt.Printf("Generación %d/infinito\n", contador)
+
+            //Mensaje sincrono gRPC
+            addr:="dist105:50051"
+            conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+            if err != nil {
+                log.Fatalf("did not connect: %v", err)
+            }
+            //defer conn.Close()
+            c := pb.NewInteresadosClient(conn)
+
+            // Contact the server and print out its response.
+            ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+            //defer cancel()
+            r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(llaves)})
+            if err != nil {
+                log.Fatalf("could not greet: %v", err)
+            }
+            log.Printf("Verification: %s", r.GetResult())
+
+            conn.Close()
+            cancel()
         }
         
     } else {
         for i := 0; i < iterations; i++ {
-            randomNumber := rand.Intn(max-min+1) + min
+            //randomNumber := rand.Intn(max-min+1) + min
             contador++
-            fmt.Printf("Generación %d/%d"\n, contador, iterations)
-        }
-    } */  
-    
-    addr:="dist105:50051"
-    conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
-	c := pb.NewInteresadosClient(conn)
+            fmt.Printf("Generación %d/%d\n", contador, iterations)
 
-	// Contact the server and print out its response.
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(llaves)})
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
-	log.Printf("Verification: %s", r.GetResult())
+            //Mensaje sincrono gRPC
+            addr:="dist105:50051"
+            conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+            if err != nil {
+                log.Fatalf("did not connect: %v", err)
+            }
+            defer conn.Close()
+            c := pb.NewInteresadosClient(conn)
+
+            // Contact the server and print out its response.
+            ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+            defer cancel()
+            r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(llaves)})
+            if err != nil {
+                log.Fatalf("could not greet: %v", err)
+            }
+            log.Printf("Verification: %s", r.GetResult())
+
+        }
+    } 
+    
 }
 
 
