@@ -34,7 +34,7 @@ func main() {
     txt := 0
     
     // Conexion RabbitMQ
-    connQ, err := amqp.Dial("amqp://test:test@" + hostQ + ":5672")
+    connQ, err := amqp.Dial("amqp://guest:guest@" + hostQ + ":5672")
     if err != nil {
         log.Fatal(err)
     } 
