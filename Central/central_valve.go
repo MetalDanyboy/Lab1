@@ -49,7 +49,7 @@ func main() {
         }
     } */  
     
-    addr:="dist@dist105.inf.santiago.usm.cl:50051"
+    addr:="dist105:50051"
     conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
