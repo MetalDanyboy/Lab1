@@ -35,6 +35,7 @@ func (s *server) Registrados(ctx context.Context, req *pb.NumberRequest) (*pb.Nu
 }
 
 func main() {
+    keys_available = false
     name = "Europa"
     
     rand.Seed(time.Now().UnixNano())
@@ -70,8 +71,7 @@ func main() {
 	        log.Fatalf("failed to serve: %v", err)
 	    }
         //Fin mensaje
-        keys_available = true
-        if keys_available{
+        if keys_available == true{
             log.Println("Llaves disponibles")
             //Usuarios interesados
             if txt == 0 {
