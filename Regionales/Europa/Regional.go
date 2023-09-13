@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"time"
 
 	pb "github.com/Sistemas-Distribuidos-2023-02/Grupo27-Laboratorio-1/protos"
 
@@ -29,6 +30,7 @@ func (s *server) Registrados(ctx context.Context, req *pb.NumberRequest) (*pb.Nu
 
 func main() {
     
+    rand.Seed(time.Now().UnixNano())
     hostQ := "dist105"                                             
     qName := "testing"
     txt := 0
