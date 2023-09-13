@@ -57,7 +57,7 @@ func main() {
     } 
     defer ch.Close() 
     
-    for {
+    
         go func() {
             //Mensaje sincrono gRPC
             //Central -> Regional
@@ -74,7 +74,7 @@ func main() {
         }()
        
         //Fin mensaje
-    
+    for {
         if keys_available{
             log.Println("Llaves disponibles")
             //Usuarios interesados
@@ -112,6 +112,6 @@ func main() {
             //Fin mensaje
             llaves += random - registrados
         }
-        
+        keys_available=false
     }
 }
