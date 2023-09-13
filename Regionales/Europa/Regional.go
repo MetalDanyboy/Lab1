@@ -60,6 +60,7 @@ func main() {
 	    if err := s.Serve(lis); err != nil {
 	        log.Fatalf("failed to serve: %v", err)
 	    }
+        log.Println("Escuchando en puerto 50051 . . .")
         //Fin mensaje
 
     
