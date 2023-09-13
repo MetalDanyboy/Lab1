@@ -70,7 +70,7 @@ func main() {
 	    if err := s.Serve(lis); err != nil {
 	        log.Fatalf("failed to serve: %v", err)
 	    }
-        s.Stop()
+        s.GracefulStop()
         lis.Close()
         //Fin mensaje
 
