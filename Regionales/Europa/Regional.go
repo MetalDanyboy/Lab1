@@ -19,7 +19,7 @@ var llaves int
 var registrados int
 var numero int
 var name string
-var keys_available chan bool
+
 
 type server struct{
     pb.UnimplementedInteresadosServer
@@ -28,9 +28,9 @@ type server struct{
 func (s *server) Registrados(ctx context.Context, req *pb.NumberRequest) (*pb.NumberResponse, error) {
     request := req.GetNotification() 
     log.Printf("Request: %s", request)
-    if request == "I have Keys ..." {
+    /*if request == "I have Keys ..." {
         keys_available <- true
-    }
+    }*/
     return &pb.NumberResponse{Result: name+": OK"}, nil
 }
 
@@ -71,6 +71,7 @@ func main() {
         if err := s.Serve(lis); err != nil {
             log.Fatalf("failed to serve: %v", err)
         }
+        keys_available<-true
     }()
        
         //Fin mensaje
