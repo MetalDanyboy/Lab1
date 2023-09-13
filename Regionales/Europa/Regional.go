@@ -65,9 +65,9 @@ func main() {
 	    if err := s.Serve(lis); err != nil {
 	        log.Fatalf("failed to serve: %v", err)
 	    }
-        
+        log.Println(s.GetServiceInfo())
         //Fin mensaje
-
+        
     
         //Usuarios interesados
         if txt == 0 {
