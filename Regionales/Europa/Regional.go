@@ -19,7 +19,7 @@ var llaves int
 var registrados int
 var numero int
 var name string
-var keys_available bool
+var keys_available chan bool
 
 type server struct{
     pb.UnimplementedInteresadosServer
@@ -29,13 +29,14 @@ func (s *server) Registrados(ctx context.Context, req *pb.NumberRequest) (*pb.Nu
     request := req.GetNotification() 
     log.Printf("Request: %s", request)
     if request == "I have Keys ..." {
-        keys_available = true
+        keys_available <- true
     }
     return &pb.NumberResponse{Result: name+": OK"}, nil
 }
 
 func main() {
-    keys_available = false
+    keys_available := make(chan bool)
+    keys_available <- false
     name = "Europa"
     
     rand.Seed(time.Now().UnixNano())
@@ -57,27 +58,25 @@ func main() {
     } 
     defer ch.Close() 
     
-    
-        go func() {
-            //Mensaje sincrono gRPC
-            //Central -> Regional
-            log.Println("Escuchando en puerto 50051 . . .")
-            lis, err := net.Listen("tcp", ":50051")
-            if err != nil {
-                log.Fatalf("failed to listen: %v", err)
-            }
-            s := grpc.NewServer()
-            pb.RegisterInteresadosServer(s, &server{})
-            if err := s.Serve(lis); err != nil {
-                log.Fatalf("failed to serve: %v", err)
-            }
-            s.GracefulStop()
-            lis.Close()
-        }()
+    go func() {
+        //Mensaje sincrono gRPC
+        //Central -> Regional
+        log.Println("Escuchando en puerto 50051 . . .")
+        lis, err := net.Listen("tcp", ":50051")
+        if err != nil {
+            log.Fatalf("failed to listen: %v", err)
+        }
+        s := grpc.NewServer()
+        pb.RegisterInteresadosServer(s, &server{})
+        if err := s.Serve(lis); err != nil {
+            log.Fatalf("failed to serve: %v", err)
+        }
+    }()
        
         //Fin mensaje
     for {
-        if keys_available{
+        valorRecibido:= <-keys_available
+        if valorRecibido{
             log.Println("Llaves disponibles")
             //Usuarios interesados
             if txt == 0 {
@@ -114,6 +113,6 @@ func main() {
             //Fin mensaje
             llaves += random - registrados
         }
-        keys_available=false
+        keys_available<-false
     }
 }
