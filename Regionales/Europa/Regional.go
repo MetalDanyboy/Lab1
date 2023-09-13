@@ -35,7 +35,7 @@ func (s *server) Registrados(ctx context.Context, req *pb.NumberRequest) (*pb.Nu
 }
 
 func main() {
-    keys_available = false
+    keys_available = true
     name = "Europa"
     
     rand.Seed(time.Now().UnixNano())
