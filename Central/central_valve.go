@@ -38,7 +38,7 @@ func main() {
 
     if iterations == -1 {
         for {
-            //randomNumber := rand.Intn(max-min+1) + min
+            randomNumber := rand.Intn(max-min+1) + min
             contador++
             fmt.Printf("Generación %d/infinito\n", contador)
 
@@ -54,7 +54,7 @@ func main() {
             // Contact the server and print out its response.
             ctx, cancel := context.WithTimeout(context.Background(), time.Second)
             //defer cancel()
-            r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(llaves)})
+            r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(randomNumber)})
             if err != nil {
                 log.Fatalf("could not greet: %v", err)
             }
@@ -66,7 +66,7 @@ func main() {
         
     } else {
         for i := 0; i < iterations; i++ {
-            //randomNumber := rand.Intn(max-min+1) + min
+            randomNumber := rand.Intn(max-min+1) + min
             contador++
             fmt.Printf("Generación %d/%d\n", contador, iterations)
 
@@ -82,7 +82,7 @@ func main() {
             // Contact the server and print out its response.
             ctx, cancel := context.WithTimeout(context.Background(), time.Second)
             defer cancel()
-            r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(llaves)})
+            r, err := c.Registrados(ctx, &pb.NumberRequest{Number: int64(randomNumber)})
             if err != nil {
                 log.Fatalf("could not greet: %v", err)
             }
