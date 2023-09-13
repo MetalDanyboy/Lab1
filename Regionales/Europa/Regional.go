@@ -19,13 +19,18 @@ var llaves int
 var registrados int
 var numero int
 var name string
+var keys_available bool
 
 type server struct{
     pb.UnimplementedInteresadosServer
 }
 
 func (s *server) Registrados(ctx context.Context, req *pb.NumberRequest) (*pb.NumberResponse, error) {
-    //receivedNumber := req.GetNumber() 
+    request := req.GetNotification() 
+    log.Printf("Request: %s", request)
+    if request == "I have Keys ..." {
+        keys_available = true
+    }
     return &pb.NumberResponse{Result: name+": OK"}, nil
 }
 
@@ -65,43 +70,48 @@ func main() {
 	    if err := s.Serve(lis); err != nil {
 	        log.Fatalf("failed to serve: %v", err)
 	    }
-        log.Println(s.GetServiceInfo())
         //Fin mensaje
         
-    
-        //Usuarios interesados
-        if txt == 0 {
-            content, err := os.ReadFile("parametros_de_inicio.txt")
+        if keys_available{
+            log.Println("Llaves disponibles")
+            //Usuarios interesados
+            if txt == 0 {
+                content, err := os.ReadFile("parametros_de_inicio.txt")
+                if err != nil {
+                    log.Fatal(err)
+                }
+                numero, _= strconv.Atoi(string(content))
+                txt = 1
+            }
+            
+            num_2 := float64(numero) /2
+            p := num_2*0.20
+            random := rand.Intn(int((num_2+p)-(num_2-p) + (num_2 - p)))
+
+
+            //Mensaje asincrono
+            //Regional -> RabbitMQ -> Central
+            err = ch.Publish("", qName, false, false,
+                amqp.Publishing{
+                    Headers:     nil,
+                    ContentType: "text/plain",
+                    Body:        []byte(strconv.Itoa(random)),
+                    })
             if err != nil {
                 log.Fatal(err)
             }
-            numero, _= strconv.Atoi(string(content))
-            txt = 1
+            // Fin de mensaje
+
+
+            //Mensaje sincrono gRPC
+            //Central -> Regional
+
+            //Fin mensaje
+            llaves += random - registrados
         }
         
-        num_2 := float64(numero) /2
-        p := num_2*0.20
-        random := rand.Intn(int((num_2+p)-(num_2-p) + (num_2 - p)))
 
-
-        //Mensaje asincrono
-        //Regional -> RabbitMQ -> Central
-        err = ch.Publish("", qName, false, false,
-            amqp.Publishing{
-                Headers:     nil,
-                ContentType: "text/plain",
-                Body:        []byte(strconv.Itoa(random)),
-                })
-        if err != nil {
-            log.Fatal(err)
-        }
-        // Fin de mensaje
-
-
-        //Mensaje sincrono gRPC
-        //Central -> Regional
-
-        //Fin mensaje
-        llaves += random - registrados
+    
+        
     }
 }
