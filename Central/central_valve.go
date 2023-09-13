@@ -18,7 +18,7 @@ import (
 func main() {
 
     rand.Seed(time.Now().UnixNano())
-    content, err := os.ReadFile("parametros_de_inicio.txt")
+    content, err := os.ReadFile("parametros de inicio.txt")
     if err != nil {
         log.Fatal(err)
     }
