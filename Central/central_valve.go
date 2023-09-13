@@ -32,7 +32,7 @@ func main() {
     max, _ := strconv.Atoi(rangoLlaves[1])
     iterations, _ := strconv.Atoi(lineas[1])
     llaves := rand.Intn(max-min+1) + min
-    log.Println("Llaves: %d\n", llaves)
+    log.Printf("Llaves: %d\n", llaves)
     contador := 0
 
 
