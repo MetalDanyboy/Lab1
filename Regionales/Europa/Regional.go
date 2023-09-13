@@ -56,24 +56,25 @@ func main() {
         log.Fatal(err)
     } 
     defer ch.Close() 
-
-    go func() {
-        //Mensaje sincrono gRPC
-        //Central -> Regional
-        log.Println("Escuchando en puerto 50051 . . .")
-	    lis, err := net.Listen("tcp", ":50051")
-	    if err != nil {
-	        log.Fatalf("failed to listen: %v", err)
-	    }
-	    s := grpc.NewServer()
-	    pb.RegisterInteresadosServer(s, &server{})
-	    if err := s.Serve(lis); err != nil {
-	        log.Fatalf("failed to serve: %v", err)
-	    }
-    }()
+    
+    for {
+        go func() {
+            //Mensaje sincrono gRPC
+            //Central -> Regional
+            log.Println("Escuchando en puerto 50051 . . .")
+            lis, err := net.Listen("tcp", ":50051")
+            if err != nil {
+                log.Fatalf("failed to listen: %v", err)
+            }
+            s := grpc.NewServer()
+            pb.RegisterInteresadosServer(s, &server{})
+            if err := s.Serve(lis); err != nil {
+                log.Fatalf("failed to serve: %v", err)
+            }
+        }()
        
         //Fin mensaje
-    for {
+    
         if keys_available{
             log.Println("Llaves disponibles")
             //Usuarios interesados
