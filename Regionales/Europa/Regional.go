@@ -51,6 +51,7 @@ func main() {
 
         //Mensaje sincrono gRPC
         //Central -> Regional
+        log.Println("Escuchando en puerto 50051 . . .")
 	    lis, err := net.Listen("tcp", ":50051")
 	    if err != nil {
 	        log.Fatalf("failed to listen: %v", err)
@@ -60,7 +61,7 @@ func main() {
 	    if err := s.Serve(lis); err != nil {
 	        log.Fatalf("failed to serve: %v", err)
 	    }
-        log.Println("Escuchando en puerto 50051 . . .")
+        
         //Fin mensaje
 
     
