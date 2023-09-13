@@ -57,7 +57,6 @@ func main() {
     defer ch.Close() 
 
     for {
-
         //Mensaje sincrono gRPC
         //Central -> Regional
         log.Println("Escuchando en puerto 50051 . . .")
@@ -71,7 +70,7 @@ func main() {
 	        log.Fatalf("failed to serve: %v", err)
 	    }
         //Fin mensaje
-        
+        keys_available = true
         if keys_available{
             log.Println("Llaves disponibles")
             //Usuarios interesados
@@ -109,9 +108,6 @@ func main() {
             //Fin mensaje
             llaves += random - registrados
         }
-        
-
-    
         
     }
 }
