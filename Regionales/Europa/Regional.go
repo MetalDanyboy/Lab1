@@ -71,8 +71,9 @@ func main() {
 	        log.Fatalf("failed to serve: %v", err)
 	    }
         s.Stop()
+        lis.Close()
         //Fin mensaje
-        
+
         if keys_available{
             log.Println("Llaves disponibles")
             //Usuarios interesados
