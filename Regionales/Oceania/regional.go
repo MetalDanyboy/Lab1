@@ -2,12 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math/rand"
 	"net"
-	"os"
 	"strconv"
-	"time"
 
 	pb "github.com/MetalDanyboy/Lab1/protos"
 
@@ -18,11 +17,12 @@ import (
 var llaves int
 
 type Server struct {
+	pb.UnimplementedChatServiceServer
 }
 
-func (s *Server) SayHello(ctx context.Context, in *Message) (*Message, error) {
+func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, error) {
 	log.Printf("Receive message body from client: %s", in.Body)
-	return &Message{Body: "Hello From the Server!"}, nil
+	return &pb.Message{Body: "Hello From the Server!"}, nil
 }
 
 
@@ -35,11 +35,11 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	s := chat.Server{}
+	//s := chat.Server{}
 
 	grpcServer := grpc.NewServer()
 
-	chat.RegisterChatServiceServer(grpcServer, &s)
+	pb.RegisterChatServiceServer(grpcServer, &Server{})
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
@@ -105,18 +105,19 @@ func main() {
 
     //Grpc
 	//##############################################
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
+	lis, err = net.Listen("tcp", fmt.Sprintf(":%d", 9000))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	s := chat.Server{}
+	//s := chat.Server{}
 
-	grpcServer := grpc.NewServer()
+	grpcServer = grpc.NewServer()
 
-	chat.RegisterChatServiceServer(grpcServer, &s)
+	pb.RegisterChatServiceServer(grpcServer, &Server{})
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
+}
 	//##############################################

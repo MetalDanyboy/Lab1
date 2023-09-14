@@ -2,14 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
-	"math/rand"
-	"net"
-	"os"
-	"strconv"
-	"time"
-
-	pb "github.com/MetalDanyboy/Lab1/protos"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc"
@@ -92,3 +86,4 @@ func main() {
 		log.Fatalf("Error send msj: %s", err)
 	}
 	log.Printf("Response from regional: %s", response.Body)
+}
