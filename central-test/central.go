@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	pb "github.com/MetalDanyboy/Lab1/protos"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc"
 )
@@ -20,13 +21,13 @@ func main() {
 		log.Fatalf("did not connect: %s", err)
 	}
 	defer conn.Close()
-	c := chat.NewChatServiceClient(conn)
+	c := pb.NewChatServiceClient(conn)
 	//##############################################
 
 
 	//Enviar Mensaje 1 - Grpc (Tengo llaves)
 	//##############################################
-	response, err := c.SayHello(context.Background(), &chat.Message{Body: "Tengo llaves"})
+	response, err := c.SayHello(context.Background(), &pb.Message{Body: "Tengo llaves"})
 	if err != nil {
 		log.Fatalf("Error send msj: %s", err)
 	}
@@ -68,9 +69,11 @@ func main() {
 	//Recibir Mensaje  - Rabbit (Usuarios interesados)
 	//##############################################
 	forever := make(chan bool)
+	mensaje := make(chan string)
 	go func() {
 		for msg := range msgs {
 			fmt.Printf("Received Message: %s\n", msg.Body)
+			mensaje <- string(msg.Body)
 		}
 	}()
 
@@ -81,7 +84,8 @@ func main() {
 
 	//Enviar Mensaje 2 - Grpc (n° de registrados)
 	//##############################################
-	response, err := c.SayHello(context.Background(), &chat.Message{Body: msg.Body+" Msg 2"})
+	mensaje2:= <- mensaje
+	response, err = c.SayHello(context.Background(), &pb.Message{Body: mensaje2 +" Msg 2"})
 	if err != nil {
 		log.Fatalf("Error send msj: %s", err)
 	}
