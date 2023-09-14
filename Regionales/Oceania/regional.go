@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-var llaves int
+//var llaves int
 
 type Server struct {
 	pb.UnimplementedChatServiceServer
@@ -30,7 +30,7 @@ func main() {
 
     //Grpc
 	//##############################################
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 50051))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -105,7 +105,7 @@ func main() {
 
     //Grpc
 	//##############################################
-	lis, err = net.Listen("tcp", fmt.Sprintf(":%d", 9000))
+	lis, err = net.Listen("tcp", fmt.Sprintf(":%d", 50051))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
