@@ -17,7 +17,7 @@ func main() {
     //Conexion Grpc
 	//##############################################
 	var conn *grpc.ClientConn
-	conn, err := grpc.Dial(":9000",grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("9000:9000",grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)
 	}
