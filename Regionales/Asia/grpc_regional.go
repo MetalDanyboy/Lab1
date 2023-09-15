@@ -50,6 +50,7 @@ func ListenGrpcServer(lis net.Listener) {
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("\nfailed to serve: %s", err)
 	}
+	
 }
 
 func StopGrpcServer() {
@@ -59,7 +60,12 @@ func StopGrpcServer() {
 func ServidorGRPC()(string){
 	//Grpc
 	lis:=StartGrpcServer()
-	go ListenGrpcServer(lis)
+	stopCh := make(chan struct{})
+	go func(){
+		ListenGrpcServer(lis)
+		close(stopCh)
+	}()
+	<-stopCh
 	StopGrpcServer()
 
 
@@ -82,6 +88,8 @@ func ServidorGRPC()(string){
 	grpcServer.Stop()*/
 	return server.mensaje
 }
+
+var msj string
 
 func main() {
 	//Conexion Rabbit
@@ -114,7 +122,7 @@ func main() {
 		panic(err)
 	}
 
-	msj:=ServidorGRPC()
+	msj=ServidorGRPC()
 	if msj == "Hola desde el central"{
 		//Mensaje Rabbit
 		err= channel.PublishWithContext(
