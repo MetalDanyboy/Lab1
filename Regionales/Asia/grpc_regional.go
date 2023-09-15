@@ -27,7 +27,10 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 	return &pb.Message{Body: "Hello From the Server!"}, nil
 }
 
-func ServidorGRPC()(string){
+var grpcServer *grpc.Server
+var server *Server
+
+func StartGrpcServer() (socket net.Listener) {
 	//Grpc
 	puerto := ":50053"
 	lis, err := net.Listen("tcp", puerto)
@@ -36,8 +39,39 @@ func ServidorGRPC()(string){
 		log.Fatalf("'failed to listen: %v", err)
 	}
 
+	grpcServer = grpc.NewServer()
+	server = &Server{}
+	pb.RegisterChatServiceServer(grpcServer, server)
+
+	return lis
+}
+
+func ListenGrpcServer(lis net.Listener) {
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("\nfailed to serve: %s", err)
+	}
+}
+
+func StopGrpcServer() {
+	grpcServer.Stop()
+}
+
+func ServidorGRPC()(string){
+	//Grpc
+	lis:=StartGrpcServer()
+	go ListenGrpcServer(lis)
+	StopGrpcServer()
+
+
+	/*puerto := ":50053"
+	lis, err := net.Listen("tcp", puerto)
+	fmt.Printf("Escuchando %s\n", puerto)
+	if err != nil {
+		log.Fatalf("'failed to listen: %v", err)
+	}
+
 	grpcServer := grpc.NewServer()
-	server := &Server{}
+	server = &Server{}
 	pb.RegisterChatServiceServer(grpcServer, server)
 
 	if err := grpcServer.Serve(lis); err != nil {
@@ -45,7 +79,7 @@ func ServidorGRPC()(string){
 	}
 
 	lis.Close()
-	grpcServer.Stop()
+	grpcServer.Stop()*/
 	return server.mensaje
 }
 
@@ -81,7 +115,6 @@ func main() {
 	}
 
 	msj:=ServidorGRPC()
-	log.Println( )
 	if msj == "Hola desde el central"{
 		//Mensaje Rabbit
 		err= channel.PublishWithContext(
