@@ -10,7 +10,7 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc"
 )
-
+var server_name string
 
 type Server struct {
 	pb.UnimplementedChatServiceServer
@@ -28,7 +28,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 		false,     // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body:        []byte("186"), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+			Body:        []byte(server_name+"-186"), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
 		},
 	)
 	fmt.Println("Mande 186 llaves")
@@ -41,6 +41,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 }
 
 func main() {
+	server_name = "Asia"
 	addr_Rabbit := "dist106.inf.santiago.usm.cl"
 	connection, err := amqp.Dial("amqp://guest:guest@" + addr_Rabbit + ":5672/")
 	if err != nil {

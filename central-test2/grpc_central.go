@@ -4,10 +4,13 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 	"sync"
 	"time"
 
 	pb "github.com/MetalDanyboy/Lab1/protos"
+	"github.com/streadway/amqp"
+
 	//amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -62,6 +65,9 @@ func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 	defer wg.Done()
 }
 
+func ConexionRabbit(mensaje string, servidor string , wg *sync.WaitGroup){
+	
+}
 
 func main() {
 	log.Println("Starting Central. . .\n")
@@ -76,9 +82,78 @@ func main() {
 	go ConexionGRPC("Hola desde el central","America", &wg)
 	wg.Add(1)
 	go ConexionGRPC("Hola desde el central","Asia", &wg)
+	wg.Wait()
+
+
+	//...CONEXION RABBITMQ...
+	addr := "dist106.inf.santiago.usm.cl:50052"
+	//addr :="localhost"
+    //Conexion rabbit
+	connection, err := amqp.Dial("amqp://guest:guest@"+addr+":5672/")
+	if err != nil {
+		panic(err)
+	}
+	defer connection.Close()
+
+	fmt.Println("Successfully connected to RabbitMQ instance")
+
+	// opening a channel over the connection established to interact with RabbitMQ
+	channel, err := connection.Channel()
+	if err != nil {
+		panic(err)
+	}
+	defer channel.Close()
+
+	// declaring consumer with its properties over channel opened
+	msgs, err := channel.Consume(
+		"testing", // queue
+		"",        // consumer
+		true,      // auto ack
+		false,     // exclusive
+		false,     // no local
+		false,     // no wait
+		nil,       //args
+	)
+	if err != nil {
+		panic(err)
+	}
+	// ...
+	
+	//Mensaje Rabbit
+	forever := make(chan bool)
+	mensaje_cola := make(chan string)
+	go func() {
+		for msg := range msgs {
+			fmt.Printf("Received Message: %s\n", msg.Body)
+			mensaje_cola <- string(msg.Body)
+			subcadenas := strings.Split(<-mensaje_cola, "-");
+			if  subcadenas[0] == "Asia" {
+				wg.Add(1)
+				go ConexionGRPC("200","Asia", &wg)
+			}else if subcadenas[0] == "America"{
+				wg.Add(1)
+				go ConexionGRPC("200","America", &wg)
+			} else if subcadenas[0] == "Europa"{
+				wg.Add(1)
+				go ConexionGRPC("200","Europa", &wg)
+			} else if subcadenas[0] == "Oceania"{
+				wg.Add(1)
+				go ConexionGRPC("200","Oceania", &wg)
+			}
+		}
+		wg.Wait()
+	}()
+	fmt.Println("Waiting for messages...")
+	<-forever
+	
+	
+	//...
+
+	/*wg.Add(1)
+	go ConexionGRPC("200","Asia", &wg)
 
 	wg.Wait()
-	log.Println("\nFinishing Central. . .")
+	log.Println("\nFinishing Central. . .")*/
 
 }
 
