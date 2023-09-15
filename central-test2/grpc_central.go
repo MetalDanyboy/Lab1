@@ -30,7 +30,7 @@ func main() {
 
 		response, err := c.SayHello(context.Background(), &pb.Message{Body: "Tengo llaves"})
 		if err != nil {
-			log.Fatalf("Error calling SendMessage: %v", err)
+			log.Panic("Error calling SendMessage: %v", err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
