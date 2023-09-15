@@ -23,7 +23,7 @@ func ConexionGRPC(mensaje string, servidor string){
 		nombre="America"
 	}else if servidor == "Asia"{
 		
-		host="dist107.inf.santiago.usm.cl"
+		host="dist106.inf.santiago.usm.cl"
 		puerto="50053"
 		nombre="Asia"
 	}else if servidor == "Europa"{
@@ -42,7 +42,6 @@ func ConexionGRPC(mensaje string, servidor string){
 	if err != nil {
 		log.Fatalf("Failed to connect: %v", err)
 	}
-	log.Println("CONNECTED to server "+nombre+"!")
 	fmt.Printf("Esperando\n")
 	defer conn.Close()
 
