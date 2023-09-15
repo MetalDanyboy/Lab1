@@ -45,7 +45,7 @@ func ServidorGRPC()(string){
 	}
 
 	lis.Close()
-	grpcServer.GracefulStop()
+	grpcServer.Stop()
 	return server.mensaje
 }
 
