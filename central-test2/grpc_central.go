@@ -61,6 +61,7 @@ func ConexionGRPC(mensaje string, servidor string){
 
 func main() {
 
+	log.Println("Starting program . . .")
 	//"localhost:50052"
 	//"host.docker.internal:50052"
 	//172.21.255.255:50052
