@@ -8,6 +8,7 @@ import (
 	pb "github.com/MetalDanyboy/Lab1/protos"
 	//amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 
@@ -15,7 +16,7 @@ func main() {
 
 	//"localhost:50052"
 	//"host.docker.internal:50052"
-	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:50052",grpc.WithTransportCredentials(insecure.NewCredentials()))
 	fmt.Printf("Esperando\n")
 	if err != nil {
 		log.Fatalf("Failed to connect: %v", err)
