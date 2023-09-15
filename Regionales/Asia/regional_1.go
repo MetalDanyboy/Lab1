@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+
 type Server struct {
 	pb.UnimplementedChatServiceServer
 	channel *amqp.Channel // Agregamos un campo para el canal de RabbitMQ
