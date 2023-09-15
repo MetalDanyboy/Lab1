@@ -12,6 +12,52 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+func ConexionGRPC(mensaje string, servidor string){
+	var host string
+	var puerto string
+	var nombre string
+	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
+	if servidor == "America"{
+		host="dist106.inf.santiago.usm.cl"
+		puerto="50052"
+		nombre="America"
+	}else if servidor == "Asia"{
+		
+		host="dist107.inf.santiago.usm.cl"
+		puerto="50053"
+		nombre="Asia"
+	}else if servidor == "Europa"{
+
+		host="dist108.inf.santiago.usm.cl"
+		puerto="50054"
+		nombre="Europa"
+	}else if servidor == "Oceania"{
+		
+		host="dist109.inf.santiago.usm.cl"
+		puerto="50055"
+		nombre="Oceania"
+	}
+	
+	conn, err := grpc.Dial(host+":"+puerto,grpc.WithTransportCredentials(insecure.NewCredentials()))	
+	if err != nil {
+		log.Fatalf("Failed to connect: %v", err)
+	}
+	fmt.Printf("Esperando\n")
+	defer conn.Close()
+
+	c := pb.NewChatServiceClient(conn)
+	for {
+		log.Println("Sending message to server "+nombre+": "+mensaje)
+		response, err := c.SayHello(context.Background(), &pb.Message{Body: mensaje})
+		if err != nil {
+			log.Panic("Error calling SendMessage: %v", err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+		log.Printf("Response from server "+nombre+": "+"%s", response.Body)
+		break
+	}
+}
 
 func main() {
 
@@ -20,26 +66,8 @@ func main() {
 	//172.21.255.255:50052
 	//regional:50052
 	//172.21.0.1:50052
-	conn, err := grpc.Dial("dist106.inf.santiago.usm.cl:50052",grpc.WithTransportCredentials(insecure.NewCredentials()))
-	fmt.Printf("Esperando\n")
-	if err != nil {
-		log.Fatalf("Failed to connect: %v", err)
-	}
-	defer conn.Close()
-
-	c := pb.NewChatServiceClient(conn)
-
-	for {
-
-		response, err := c.SayHello(context.Background(), &pb.Message{Body: "Tengo llaves"})
-		if err != nil {
-			log.Panic("Error calling SendMessage: %v", err)
-			time.Sleep(5 * time.Second)
-			continue
-		}
-		log.Printf("Response from server: %s", response.Body)
-		break
-	}	
+	//"dist106.inf.santiago.usm.cl:50052"
+	ConexionGRPC("Hola desde el central","America")
 
 }
 
