@@ -122,7 +122,8 @@ func main() {
 		for msg := range msgs {
 			fmt.Printf("Received Message: %s\n", msg.Body)
 			mensaje_cola <- string(msg.Body)
-			subcadenas := strings.Split(<-mensaje_cola, "-");
+			subcadenas := strings.Split(<-mensaje_cola, "-")
+			fmt.Printf("antes de if")
 			if  subcadenas[0] == "Asia" {
 				fmt.Printf("Entre a Asia\n")
 				ConexionGRPC("200","Asia", &wg)
