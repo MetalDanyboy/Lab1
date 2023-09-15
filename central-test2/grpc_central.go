@@ -51,7 +51,7 @@ func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 		log.Println("Sending message to server "+nombre+": "+mensaje)
 		response, err := c.SayHello(context.Background(), &pb.Message{Body: mensaje})
 		if err != nil {
-			log.Println("Server "+nombre+" not responding: "+err.Error())
+			log.Println("Server "+nombre+" not responding: ")
 			log.Println("Trying again in 10 seconds. . .")
 			time.Sleep(10 * time.Second)
 			continue
