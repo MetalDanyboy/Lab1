@@ -65,10 +65,6 @@ func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 	defer wg.Done()
 }
 
-func ConexionRabbit(mensaje string, servidor string , wg *sync.WaitGroup){
-	
-}
-
 func main() {
 	log.Println("Starting Central. . .\n")
 	//"localhost:50052"
@@ -128,20 +124,18 @@ func main() {
 			mensaje_cola <- string(msg.Body)
 			subcadenas := strings.Split(<-mensaje_cola, "-");
 			if  subcadenas[0] == "Asia" {
-				wg.Add(1)
-				go ConexionGRPC("200","Asia", &wg)
+				ConexionGRPC("200","Asia", &wg)
 			}else if subcadenas[0] == "America"{
-				wg.Add(1)
-				go ConexionGRPC("200","America", &wg)
+
+				ConexionGRPC("200","America", &wg)
 			} else if subcadenas[0] == "Europa"{
-				wg.Add(1)
-				go ConexionGRPC("200","Europa", &wg)
+
+				ConexionGRPC("200","Europa", &wg)
 			} else if subcadenas[0] == "Oceania"{
-				wg.Add(1)
-				go ConexionGRPC("200","Oceania", &wg)
+
+				ConexionGRPC("200","Oceania", &wg)
 			}
 		}
-		wg.Wait()
 	}()
 	fmt.Println("Waiting for messages...")
 	<-forever
