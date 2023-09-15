@@ -13,8 +13,9 @@ import (
 
 func main() {
 
-	//"localhost:50052
-	conn, err := grpc.Dial("host.docker.internal:50052", grpc.WithInsecure())
+	//
+	//"host.docker.internal:50052"
+	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure())
 	fmt.Printf("Esperando\n")
 	if err != nil {
 		log.Fatalf("Failed to connect: %v", err)
