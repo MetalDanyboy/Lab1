@@ -19,7 +19,7 @@ func main() {
 	//"host.docker.internal:50052"
 	//172.21.255.255:50052
 	//regional:50052
-	conn, err := grpc.Dial("172.19.255.255:50052",grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("172.21.0.1:50052",grpc.WithTransportCredentials(insecure.NewCredentials()))
 	fmt.Printf("Esperando\n")
 	if err != nil {
 		log.Fatalf("Failed to connect: %v", err)
