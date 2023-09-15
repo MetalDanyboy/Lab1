@@ -24,6 +24,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 
     // Almacena el mensaje en la variable miembro.
     s.mensaje = message
+	grpcServer.Stop()
 	return &pb.Message{Body: "Hello From the Server!"}, nil
 }
 
@@ -60,13 +61,12 @@ func StopGrpcServer() {
 func ServidorGRPC()(string,chan struct{}){
 	//Grpc
 	lis:=StartGrpcServer()
-	stopCh := make(chan struct{})
 	go func(){
 		ListenGrpcServer(lis)
 		close(stopCh)
 	}()
 	<-stopCh
-	StopGrpcServer()
+	//StopGrpcServer()
 
 
 	/*puerto := ":50053"
@@ -90,6 +90,7 @@ func ServidorGRPC()(string,chan struct{}){
 }
 
 var msj string
+var stopCh chan struct{}
 
 func main() {
 	//Conexion Rabbit
@@ -122,7 +123,7 @@ func main() {
 		panic(err)
 	}
 
-	msj ,stopCh:=ServidorGRPC()
+	msj ,stopCh=ServidorGRPC()
 	<-stopCh
 	if msj == "Hola desde el central"{
 		//Mensaje Rabbit
