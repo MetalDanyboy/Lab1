@@ -86,7 +86,7 @@ func main() {
 
 
 	//...CONEXION RABBITMQ...
-	addr := "dist106.inf.santiago.usm.cl:50052"
+	addr := "dist106.inf.santiago.usm.cl"
 	//addr :="localhost"
     //Conexion rabbit
 	connection, err := amqp.Dial("amqp://guest:guest@"+addr+":5672/")
