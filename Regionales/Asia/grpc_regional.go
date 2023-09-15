@@ -26,7 +26,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 func main() {
 
     //Grpc
-	puerto := ":50052"
+	puerto := ":50053"
 	lis, err := net.Listen("tcp", puerto)
 	fmt.Printf("Escuchando %s\n", puerto)
 	if err != nil {
