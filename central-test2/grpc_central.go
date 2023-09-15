@@ -69,11 +69,9 @@ func main() {
 	//172.21.0.1:50052
 	//"dist106.inf.santiago.usm.cl:50052"
 	ConexionGRPC("Hola desde el central","America")
-
-	log.Println("\nBetween conexions. . .\n")
 	ConexionGRPC("Hola desde el central","Asia")
 
-	log.Println("\nFinishin Central. . .")
+	log.Println("\nFinishing Central. . .")
 
 }
 
