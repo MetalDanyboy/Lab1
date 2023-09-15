@@ -134,6 +134,8 @@ func main() {
 			} else if subcadenas[0] == "Oceania"{
 
 				ConexionGRPC("200","Oceania", &wg)
+			}else{
+				fmt.Printf("No entre a ningun if")
 			}
 		}
 	}()
