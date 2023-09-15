@@ -57,7 +57,7 @@ func StopGrpcServer() {
 	grpcServer.Stop()
 }
 
-func ServidorGRPC()(string){
+func ServidorGRPC()(string,chan struct{}){
 	//Grpc
 	lis:=StartGrpcServer()
 	stopCh := make(chan struct{})
@@ -86,7 +86,7 @@ func ServidorGRPC()(string){
 
 	lis.Close()
 	grpcServer.Stop()*/
-	return server.mensaje
+	return server.mensaje, stopCh
 }
 
 var msj string
@@ -122,7 +122,8 @@ func main() {
 		panic(err)
 	}
 
-	msj=ServidorGRPC()
+	msj ,stopCh:=ServidorGRPC()
+	<-stopCh
 	if msj == "Hola desde el central"{
 		//Mensaje Rabbit
 		err= channel.PublishWithContext(
