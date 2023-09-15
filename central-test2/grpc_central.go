@@ -18,7 +18,7 @@ func ConexionGRPC(mensaje string, servidor string){
 	var nombre string
 	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
 	if servidor == "America"{
-		host="dist106.inf.santiago.usm.cl"
+		host="dist105.inf.santiago.usm.cl"
 		puerto="50052"
 		nombre="America"
 	}else if servidor == "Asia"{
@@ -28,12 +28,12 @@ func ConexionGRPC(mensaje string, servidor string){
 		nombre="Asia"
 	}else if servidor == "Europa"{
 
-		host="dist108.inf.santiago.usm.cl"
+		host="dist107.inf.santiago.usm.cl"
 		puerto="50054"
 		nombre="Europa"
 	}else if servidor == "Oceania"{
 		
-		host="dist109.inf.santiago.usm.cl"
+		host="dist108.inf.santiago.usm.cl"
 		puerto="50055"
 		nombre="Oceania"
 	}
@@ -50,7 +50,7 @@ func ConexionGRPC(mensaje string, servidor string){
 		log.Println("Sending message to server "+nombre+": "+mensaje)
 		response, err := c.SayHello(context.Background(), &pb.Message{Body: mensaje})
 		if err != nil {
-			log.Panic("Error calling SendMessage: %v", err)
+			log.Println("Error calling SendMessage: %v", err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
