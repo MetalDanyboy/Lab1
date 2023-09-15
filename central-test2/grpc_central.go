@@ -126,6 +126,7 @@ func main() {
 			if  subcadenas[0] == "Asia" {
 				fmt.Printf("Entre a Asia\n")
 				ConexionGRPC("200","Asia", &wg)
+				
 			}else if subcadenas[0] == "America"{
 
 				ConexionGRPC("200","America", &wg)
