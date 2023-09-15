@@ -44,7 +44,7 @@ func ServidorGRPC()(string){
 		log.Fatalf("\nfailed to serve: %s", err)
 	}
 
-	defer lis.Close()
+	lis.Close()
 	return server.mensaje
 }
 
@@ -80,7 +80,7 @@ func main() {
 	}
 
 	msj:=ServidorGRPC()
-
+	log.Println( )
 	if msj == "Hola desde el central"{
 		//Mensaje Rabbit
 		err= channel.PublishWithContext(
