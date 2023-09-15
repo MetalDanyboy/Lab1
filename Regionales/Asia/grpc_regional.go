@@ -22,10 +22,8 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 	return &pb.Message{Body: "Hello From the Server!"}, nil
 }
 
-
-func main() {
-
-    //Grpc
+func ServidorGRPC(){
+	//Grpc
 	puerto := ":50053"
 	lis, err := net.Listen("tcp", puerto)
 	fmt.Printf("Escuchando %s\n", puerto)
@@ -42,5 +40,13 @@ func main() {
 		log.Fatalf("\nfailed to serve: %s", err)
 	}
 
+	defer lis.Close()
+
+}
+
+func main() {
+
+    
+	ServidorGRPC()
 
 }
