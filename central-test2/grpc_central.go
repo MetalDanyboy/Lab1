@@ -50,8 +50,9 @@ func ConexionGRPC(mensaje string, servidor string){
 		log.Println("Sending message to server "+nombre+": "+mensaje)
 		response, err := c.SayHello(context.Background(), &pb.Message{Body: mensaje})
 		if err != nil {
-			log.Println("Server "+nombre+" NOT Available. RETRY in 10 Seconds . . .")
-			time.Sleep(10 * time.Second)
+			log.Println("Server "+nombre+" not responding: "+err.Error())
+			log.Println("Trying again in 10 seconds. . .")
+			time.Sleep(5 * time.Second)
 			continue
 		}
 		log.Printf("Response from server "+nombre+": "+"%s", response.Body)
@@ -61,15 +62,14 @@ func ConexionGRPC(mensaje string, servidor string){
 
 func main() {
 
-	log.Println("Starting program . . .")
 	//"localhost:50052"
 	//"host.docker.internal:50052"
 	//172.21.255.255:50052
 	//regional:50052
 	//172.21.0.1:50052
 	//"dist106.inf.santiago.usm.cl:50052"
-	go ConexionGRPC("Hola desde el central","America")
-	go ConexionGRPC("Hola desde el central","Asia")
+	ConexionGRPC("Hola desde el central","America")
+	ConexionGRPC("Hola desde el central","Asia")
 
 }
 
