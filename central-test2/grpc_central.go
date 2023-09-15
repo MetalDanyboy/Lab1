@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	pb "github.com/MetalDanyboy/Lab1/protos"
@@ -12,7 +13,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func ConexionGRPC(mensaje string, servidor string){
+func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 	var host string
 	var puerto string
 	var nombre string
@@ -58,7 +59,9 @@ func ConexionGRPC(mensaje string, servidor string){
 		log.Printf("Response from server "+nombre+": "+"%s", response.Body)
 		break
 	}
+	defer wg.Done()
 }
+
 
 func main() {
 	log.Println("Starting Central. . .\n")
@@ -68,9 +71,13 @@ func main() {
 	//regional:50052
 	//172.21.0.1:50052
 	//"dist106.inf.santiago.usm.cl:50052"
-	go ConexionGRPC("Hola desde el central","America")
-	ConexionGRPC("Hola desde el central","Asia")
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go ConexionGRPC("Hola desde el central","America", &wg)
+	wg.Add(1)
+	go ConexionGRPC("Hola desde el central","Asia", &wg)
 
+	wg.Wait()
 	log.Println("\nFinishing Central. . .")
 
 }
