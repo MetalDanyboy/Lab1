@@ -37,11 +37,12 @@ func ConexionGRPC(mensaje string, servidor string){
 		puerto="50055"
 		nombre="Oceania"
 	}
-	
+	log.Println("Connecting to server "+nombre+": "+host+":"+puerto+". . .")
 	conn, err := grpc.Dial(host+":"+puerto,grpc.WithTransportCredentials(insecure.NewCredentials()))	
 	if err != nil {
 		log.Fatalf("Failed to connect: %v", err)
 	}
+	log.Println("CONNECTED to server "+nombre+"!")
 	fmt.Printf("Esperando\n")
 	defer conn.Close()
 
