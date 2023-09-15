@@ -124,6 +124,7 @@ func main() {
 			mensaje_cola <- string(msg.Body)
 			subcadenas := strings.Split(<-mensaje_cola, "-");
 			if  subcadenas[0] == "Asia" {
+				fmt.Printf("Entre a Asia\n")
 				ConexionGRPC("200","Asia", &wg)
 			}else if subcadenas[0] == "America"{
 
