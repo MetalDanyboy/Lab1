@@ -50,8 +50,8 @@ func ConexionGRPC(mensaje string, servidor string){
 		log.Println("Sending message to server "+nombre+": "+mensaje)
 		response, err := c.SayHello(context.Background(), &pb.Message{Body: mensaje})
 		if err != nil {
-			log.Println("Error calling SendMessage: %v", err)
-			time.Sleep(5 * time.Second)
+			log.Println("Server "+nombre+" NOT Available. RETRY in 10 Seconds . . .")
+			time.Sleep(10 * time.Second)
 			continue
 		}
 		log.Printf("Response from server "+nombre+": "+"%s", response.Body)
