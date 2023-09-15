@@ -45,6 +45,7 @@ func ServidorGRPC()(string){
 	}
 
 	lis.Close()
+	grpcServer.GracefulStop()
 	return server.mensaje
 }
 
@@ -111,9 +112,8 @@ func main() {
 
 		fmt.Println("Queue status:", queue)
 		fmt.Println("Successfully published message")
+	}else{
+		log.Println("No se pudo conectar con RabbitMQ")
 	}
-	//else{
-		//Mensaje Rabbit
-	//}
 
 }
