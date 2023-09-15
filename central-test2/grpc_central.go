@@ -52,7 +52,7 @@ func ConexionGRPC(mensaje string, servidor string){
 		if err != nil {
 			log.Println("Server "+nombre+" not responding: "+err.Error())
 			log.Println("Trying again in 10 seconds. . .")
-			time.Sleep(5 * time.Second)
+			time.Sleep(10 * time.Second)
 			continue
 		}
 		log.Printf("Response from server "+nombre+": "+"%s", response.Body)
