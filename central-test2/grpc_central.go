@@ -67,8 +67,8 @@ func main() {
 	//regional:50052
 	//172.21.0.1:50052
 	//"dist106.inf.santiago.usm.cl:50052"
-	ConexionGRPC("Hola desde el central","America")
-	ConexionGRPC("Hola desde el central","Asia")
+	go ConexionGRPC("Hola desde el central","America")
+	go ConexionGRPC("Hola desde el central","Asia")
 
 }
 
