@@ -24,7 +24,6 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 
     // Almacena el mensaje en la variable miembro.
     s.mensaje = message
-	grpcServer.Stop()
 	return &pb.Message{Body: "Hello From the Server!"}, nil
 }
 
@@ -51,22 +50,17 @@ func ListenGrpcServer(lis net.Listener) {
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("\nfailed to serve: %s", err)
 	}
-	
 }
 
 func StopGrpcServer() {
 	grpcServer.Stop()
 }
 
-func ServidorGRPC()(string,chan struct{}){
+func ServidorGRPC()(string){
 	//Grpc
 	lis:=StartGrpcServer()
-	go func(){
-		ListenGrpcServer(lis)
-		close(stopCh)
-	}()
-	<-stopCh
-	//StopGrpcServer()
+	go ListenGrpcServer(lis)
+	StopGrpcServer()
 
 
 	/*puerto := ":50053"
@@ -86,12 +80,43 @@ func ServidorGRPC()(string,chan struct{}){
 
 	lis.Close()
 	grpcServer.Stop()*/
-	return server.mensaje, stopCh
+	return server.mensaje
+}
+
+func ListenAndClose() (string){
+    puerto := ":50053"
+    lis, err := net.Listen("tcp", puerto)
+    if err != nil {
+        log.Fatalf("failed to listen: %v", err)
+    }
+
+    grpcServer := grpc.NewServer()
+    server := &Server{} // Crea una instancia del servidor
+    pb.RegisterChatServiceServer(grpcServer, server) // Registra el servidor
+
+    log.Printf("Escuchando %s\n", puerto)
+
+    // Crea un contexto con cancelación
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel() // Asegúrate de que cancel se llame al final
+
+    // Inicia el servidor gRPC en una goroutine
+    go func() {
+        if err := grpcServer.Serve(lis); err != nil {
+            log.Fatalf("failed to serve: %s", err)
+        }
+    }()
+
+    // Espera hasta que el contexto se cancele (después de recibir el primer mensaje)
+    <-ctx.Done()
+
+    // Cierra la conexión de escucha
+    lis.Close()
+    grpcServer.Stop()
+	return server.mensaje
 }
 
 var msj string
-var stopCh chan struct{}
-
 func main() {
 	//Conexion Rabbit
 	addr_Rabbit := "dist106.inf.santiago.usm.cl"
@@ -123,8 +148,8 @@ func main() {
 		panic(err)
 	}
 
-	msj ,stopCh=ServidorGRPC()
-	<-stopCh
+	//msj=ServidorGRPC()
+	msj=ListenAndClose()
 	if msj == "Hola desde el central"{
 		//Mensaje Rabbit
 		err= channel.PublishWithContext(
