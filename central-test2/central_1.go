@@ -213,6 +213,7 @@ func main() {
 					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
 
 					if  subcadenas[0] == "Asia" {
+						time.Sleep(5 * time.Second)
 						wg.Add(1)
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
 						
