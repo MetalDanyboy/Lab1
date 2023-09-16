@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	pb "github.com/MetalDanyboy/Lab1/protos"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -50,6 +51,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 	log.Printf("Receive message body from client: %s", in.Body)
 
 	// Enviamos un mensaje a RabbitMQ
+	time.Sleep(5 * time.Second)
 	inMessage:=string(in.Body)
 	if inMessage == "LLaves Disponibles"{
 		llaves_pedidas:=Pedir_LLaves(cant_registrados,0)
