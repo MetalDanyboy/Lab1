@@ -110,7 +110,6 @@ func main() {
         return
     }
 
-    fmt.Println("Directorio actual:", directorioActual)
 	
 
 	content, err := os.ReadFile(directorioActual+"/Regionales/Asia/parametros_de_inicio.txt")
@@ -124,7 +123,9 @@ func main() {
 	}
 	fmt.Printf("\n--->Cantidad de registrados: %d\n",cant_registrados)
 	cant_llaves_pedidas=0
+	fmt.Println("Pedir llaves:",Pedir_LLaves(cant_registrados,0))
 
+	
 	server_name = "Asia"
 	addr_Rabbit := "dist106.inf.santiago.usm.cl"
 	connection, err := amqp.Dial("amqp://guest:guest@" + addr_Rabbit + ":5672/")
