@@ -111,6 +111,7 @@ func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 }
 
 func main() {
+	log.Println("Starting Central. . .\n")
 
 	directorioActual, err := os.Getwd()
     if err != nil {
@@ -130,7 +131,7 @@ func main() {
 
 	
 
-	log.Println("Starting Central. . .\n")
+	
 
 
 	//...CONEXION RABBITMQ...
@@ -230,7 +231,7 @@ func main() {
 	
 
 	
-	
+	log.Println("\nClosing Central. . .\n")
 	//...
 
 	/*wg.Add(1)
