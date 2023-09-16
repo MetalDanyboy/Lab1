@@ -69,24 +69,21 @@ func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 }
 
 func main() {
-
 	directorioActual, err := os.Getwd()
-    if err != nil {
-        fmt.Println("Error al obtener el directorio actual:", err)
-        return
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+		return
     }
 	content, err := os.ReadFile(directorioActual+"/central-test2/parametros_de_inicio.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
-	
 	lineas := strings.Split(string(content), "\n")
-    rangoLlaves := strings.Split(lineas[0], "-")
-
+	rangoLlaves := strings.Split(lineas[0], "-")
 	var min, max , iterations, contador int
-    min, _= strconv.Atoi(rangoLlaves[0])
-    max, _= strconv.Atoi(rangoLlaves[1])
-    iterations, _= strconv.Atoi(lineas[1])
+	min, _= strconv.Atoi(rangoLlaves[0])
+	max, _= strconv.Atoi(rangoLlaves[1])
+	iterations, _= strconv.Atoi(lineas[1])
 
 	
 
