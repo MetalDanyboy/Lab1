@@ -90,7 +90,7 @@ func main() {
         fmt.Println("Error al obtener el directorio actual:", err)
         return
     }
-    content, err := os.ReadFile(directorioActual+"/Regionales/Asia/parametros_de_inicio.txt")
+    content, err := os.ReadFile(directorioActual+"/Regionales/Oceania/parametros_de_inicio.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -146,22 +146,5 @@ func main() {
 		panic(err)
 	}
 
-	err = channel.Publish(
-		"",
-		"testing",
-		false,
-		false,
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte("186"),
-		},
-	)
-
-	fmt.Println("Mande 186 llaves")
-	if err != nil {
-		panic(err)
-	}
-
 	fmt.Println("Queue status:", queue)
-	fmt.Println("Successfully published message")
 }
