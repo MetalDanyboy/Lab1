@@ -17,10 +17,11 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func ConexionGRPC2(keys int, servidor string, wg *sync.WaitGroup){
+func ConexionGRPC2(keys int, servidor string){
 	
 	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
 	//host :="localhost"
+	num_cola++
 	var puerto, nombre, host string
 	
 	if servidor == "America"{
@@ -61,7 +62,6 @@ func ConexionGRPC2(keys int, servidor string, wg *sync.WaitGroup){
 		log.Printf("Response from server "+nombre+": "+"%s", response.Response)
 		break
 	}
-	defer wg.Done()
 }
 
 func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
@@ -111,7 +111,10 @@ func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 	defer wg.Done()
 }
 
+var num_cola int
+
 func main() {
+	num_cola=0
 	rand.Seed(time.Now().UnixNano())
 	log.Println("Starting Central. . .\n")
 
@@ -130,10 +133,6 @@ func main() {
 	min, _= strconv.Atoi(rangoLlaves[0])
 	max, _= strconv.Atoi(rangoLlaves[1])
 	iterations, _= strconv.Atoi(lineas[1])
-
-	
-
-	
 
 
 	//...CONEXION RABBITMQ...
@@ -205,7 +204,7 @@ func main() {
 			wg2.Add(1)
 			go func() {
 				//num_cola:=0
-				var wg3 sync.WaitGroup
+				//var wg3 sync.WaitGroup
 				for msg := range msgs {
 					fmt.Printf("Received Message: %s\n", msg.Body)
 					subcadenas := strings.Split(string(msg.Body), "-")
@@ -219,9 +218,10 @@ func main() {
 					}
 
 					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
-					wg3.Add(1)
+					/*wg3.Add(1)
 					go ConexionGRPC2(llaves_pedidas,subcadenas[0], &wg3)
-					wg3.Wait()
+					wg3.Wait()*/
+					ConexionGRPC2(llaves_pedidas,subcadenas[0])
 
 					forever <- true
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
@@ -232,19 +232,15 @@ func main() {
 			wg2.Wait()
 			fmt.Println("Waiting for messages...")
 			<-forever
-		
+
+			if num_cola >=4 {
+				num_cola=0
+				continue
+			}else{
+				time.Sleep(5 * time.Second)
+			}
+				
 		}
-	
-
-	
 	defer log.Println("Closing Central. . .\n")
-	//...
-
-	/*wg.Add(1)
-	go ConexionGRPC("200","Asia", &wg)
-
-	wg.Wait()
-	log.Println("\nFinishing Central. . .")*/
-
 }
 
