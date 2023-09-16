@@ -125,7 +125,7 @@ func main() {
 		panic(err)
 	}
 
-	puerto := ":50052"
+	puerto := ":50054"
 	lis, err := net.Listen("tcp", puerto)
 	fmt.Printf("Escuchando %s\n", puerto)
 	if err != nil {
