@@ -13,6 +13,7 @@ endif
 
 docker-regional:
 ifeq ($(HOST),localhost)
+	docker rm -f regional
 	docker run -d -it --rm --name regional -p 50052:50052 --expose 50052 lab1:latest go run Regionales/America/regional.go
 endif
 ifeq ($(HOST),dist106)
