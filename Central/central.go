@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func ConexionGRPC2(keys int, servidor string){
+func ConexionGRPC2(keys int, servidor string, wg *sync.WaitGroup){
 	
 	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
 	//host :="localhost"
@@ -61,6 +61,7 @@ func ConexionGRPC2(keys int, servidor string){
 		log.Printf("Response from server "+nombre+": "+"%s", response.Response)
 		break
 	}
+	defer wg.Done()
 }
 
 func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
@@ -176,7 +177,7 @@ func main() {
 					break
 				}
 			}
-			
+
 			if iterations == -1 {
 				fmt.Printf("\nGeneración %d/infinito\n", contador)
 			}else{
@@ -198,15 +199,12 @@ func main() {
 			go ConexionGRPC("LLaves Disponibles","Oceania", &wg)
 			wg.Wait()
 		
-			
-			
-			
-
-			
 			//Mensaje Rabbit
+			var wg2 sync.WaitGroup
 			forever := make(chan bool)
 			go func() {
 				//num_cola:=0
+				
 				for msg := range msgs {
 					fmt.Printf("Received Message: %s\n", msg.Body)
 					subcadenas := strings.Split(string(msg.Body), "-")
@@ -220,11 +218,13 @@ func main() {
 					}
 
 					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
-					go ConexionGRPC2(llaves_pedidas,subcadenas[0])
+					wg2.Add(1)
+					go ConexionGRPC2(llaves_pedidas,subcadenas[0], &wg2)
+
 					forever <- true
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
-					
 				}
+				wg2.Wait()
 				time.Sleep(5 * time.Second)
 				
 			}()
