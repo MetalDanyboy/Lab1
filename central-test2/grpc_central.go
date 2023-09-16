@@ -177,7 +177,7 @@ func main() {
 
 
 					num_cola++
-					if num_cola == 4{
+					if num_cola == 1{
 					
 						break
 					}
@@ -224,7 +224,7 @@ func main() {
 						fmt.Printf("No entre a ningun if")
 					}
 					num_cola++
-					if num_cola == 4{
+					if num_cola == 1{
 						
 						break
 					}
