@@ -72,9 +72,11 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 			log.Printf("Error al publicar en RabbitMQ: %s", err)
 		}
 	}
-
 	return &pb.Message{Body: "OK"}, nil
 }
+
+
+
 
 func main() {
 	

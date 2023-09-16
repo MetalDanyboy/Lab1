@@ -104,208 +104,86 @@ var ChatService_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "protos/test.proto",
 }
 
-// GreeterClient is the client API for Greeter service.
+// NumberServiceClient is the client API for NumberService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type GreeterClient interface {
-	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
-	UserRegion(ctx context.Context, in *UserRegionRequest, opts ...grpc.CallOption) (*UserRegionReply, error)
+type NumberServiceClient interface {
+	SendKeys(ctx context.Context, in *NumberRequest, opts ...grpc.CallOption) (*NumberResponse, error)
 }
 
-type greeterClient struct {
+type numberServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewGreeterClient(cc grpc.ClientConnInterface) GreeterClient {
-	return &greeterClient{cc}
+func NewNumberServiceClient(cc grpc.ClientConnInterface) NumberServiceClient {
+	return &numberServiceClient{cc}
 }
 
-func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
-	err := c.cc.Invoke(ctx, "/protos.Greeter/SayHello", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *greeterClient) UserRegion(ctx context.Context, in *UserRegionRequest, opts ...grpc.CallOption) (*UserRegionReply, error) {
-	out := new(UserRegionReply)
-	err := c.cc.Invoke(ctx, "/protos.Greeter/UserRegion", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// GreeterServer is the server API for Greeter service.
-// All implementations must embed UnimplementedGreeterServer
-// for forward compatibility
-type GreeterServer interface {
-	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
-	UserRegion(context.Context, *UserRegionRequest) (*UserRegionReply, error)
-	mustEmbedUnimplementedGreeterServer()
-}
-
-// UnimplementedGreeterServer must be embedded to have forward compatible implementations.
-type UnimplementedGreeterServer struct {
-}
-
-func (UnimplementedGreeterServer) SayHello(context.Context, *HelloRequest) (*HelloReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
-}
-func (UnimplementedGreeterServer) UserRegion(context.Context, *UserRegionRequest) (*UserRegionReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserRegion not implemented")
-}
-func (UnimplementedGreeterServer) mustEmbedUnimplementedGreeterServer() {}
-
-// UnsafeGreeterServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to GreeterServer will
-// result in compilation errors.
-type UnsafeGreeterServer interface {
-	mustEmbedUnimplementedGreeterServer()
-}
-
-func RegisterGreeterServer(s grpc.ServiceRegistrar, srv GreeterServer) {
-	s.RegisterService(&Greeter_ServiceDesc, srv)
-}
-
-func _Greeter_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GreeterServer).SayHello(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protos.Greeter/SayHello",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).SayHello(ctx, req.(*HelloRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Greeter_UserRegion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRegionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GreeterServer).UserRegion(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protos.Greeter/UserRegion",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).UserRegion(ctx, req.(*UserRegionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// Greeter_ServiceDesc is the grpc.ServiceDesc for Greeter service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var Greeter_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "protos.Greeter",
-	HandlerType: (*GreeterServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "SayHello",
-			Handler:    _Greeter_SayHello_Handler,
-		},
-		{
-			MethodName: "UserRegion",
-			Handler:    _Greeter_UserRegion_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "protos/test.proto",
-}
-
-// InteresadosClient is the client API for Interesados service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type InteresadosClient interface {
-	Registrados(ctx context.Context, in *NumberRequest, opts ...grpc.CallOption) (*NumberResponse, error)
-}
-
-type interesadosClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewInteresadosClient(cc grpc.ClientConnInterface) InteresadosClient {
-	return &interesadosClient{cc}
-}
-
-func (c *interesadosClient) Registrados(ctx context.Context, in *NumberRequest, opts ...grpc.CallOption) (*NumberResponse, error) {
+func (c *numberServiceClient) SendKeys(ctx context.Context, in *NumberRequest, opts ...grpc.CallOption) (*NumberResponse, error) {
 	out := new(NumberResponse)
-	err := c.cc.Invoke(ctx, "/protos.Interesados/Registrados", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protos.NumberService/SendKeys", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// InteresadosServer is the server API for Interesados service.
-// All implementations must embed UnimplementedInteresadosServer
+// NumberServiceServer is the server API for NumberService service.
+// All implementations must embed UnimplementedNumberServiceServer
 // for forward compatibility
-type InteresadosServer interface {
-	Registrados(context.Context, *NumberRequest) (*NumberResponse, error)
-	mustEmbedUnimplementedInteresadosServer()
+type NumberServiceServer interface {
+	SendKeys(context.Context, *NumberRequest) (*NumberResponse, error)
+	mustEmbedUnimplementedNumberServiceServer()
 }
 
-// UnimplementedInteresadosServer must be embedded to have forward compatible implementations.
-type UnimplementedInteresadosServer struct {
+// UnimplementedNumberServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedNumberServiceServer struct {
 }
 
-func (UnimplementedInteresadosServer) Registrados(context.Context, *NumberRequest) (*NumberResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Registrados not implemented")
+func (UnimplementedNumberServiceServer) SendKeys(context.Context, *NumberRequest) (*NumberResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendKeys not implemented")
 }
-func (UnimplementedInteresadosServer) mustEmbedUnimplementedInteresadosServer() {}
+func (UnimplementedNumberServiceServer) mustEmbedUnimplementedNumberServiceServer() {}
 
-// UnsafeInteresadosServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to InteresadosServer will
+// UnsafeNumberServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to NumberServiceServer will
 // result in compilation errors.
-type UnsafeInteresadosServer interface {
-	mustEmbedUnimplementedInteresadosServer()
+type UnsafeNumberServiceServer interface {
+	mustEmbedUnimplementedNumberServiceServer()
 }
 
-func RegisterInteresadosServer(s grpc.ServiceRegistrar, srv InteresadosServer) {
-	s.RegisterService(&Interesados_ServiceDesc, srv)
+func RegisterNumberServiceServer(s grpc.ServiceRegistrar, srv NumberServiceServer) {
+	s.RegisterService(&NumberService_ServiceDesc, srv)
 }
 
-func _Interesados_Registrados_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _NumberService_SendKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NumberRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(InteresadosServer).Registrados(ctx, in)
+		return srv.(NumberServiceServer).SendKeys(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protos.Interesados/Registrados",
+		FullMethod: "/protos.NumberService/SendKeys",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(InteresadosServer).Registrados(ctx, req.(*NumberRequest))
+		return srv.(NumberServiceServer).SendKeys(ctx, req.(*NumberRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Interesados_ServiceDesc is the grpc.ServiceDesc for Interesados service.
+// NumberService_ServiceDesc is the grpc.ServiceDesc for NumberService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Interesados_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "protos.Interesados",
-	HandlerType: (*InteresadosServer)(nil),
+var NumberService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "protos.NumberService",
+	HandlerType: (*NumberServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Registrados",
-			Handler:    _Interesados_Registrados_Handler,
+			MethodName: "SendKeys",
+			Handler:    _NumberService_SendKeys_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
