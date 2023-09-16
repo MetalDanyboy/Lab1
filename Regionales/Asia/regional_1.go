@@ -104,7 +104,10 @@ func main() {
 		log.Fatal(err)
 	}
 	lineas := strings.Split(string(content), "\n")
-	cant_registrados, _= strconv.Atoi(lineas[0])
+	cant_registrados, err= strconv.Atoi(lineas[0])
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("\n--->Cantidad de registrados: %d\n",cant_registrados)
 	cant_llaves_pedidas=0
 
