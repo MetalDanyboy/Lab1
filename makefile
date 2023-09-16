@@ -11,7 +11,7 @@ else
 endif
 
 docker-regional:
-ifeq ($(HOST),dist105)
+ifeq ($(HOST),localhost)
 	docker run -d -it --name regional -p 50052:50052 --expose 50052 lab1:latest go run Regionales/America/regional.go
 endif
 ifeq ($(HOST),dist106)
@@ -28,7 +28,7 @@ endif
 
 docker-rabbit:
 ifeq ($(HOST),dist106)
-	sudo docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+	docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 else
 	echo "Ejecutar SOLO en dist106"
 endif
