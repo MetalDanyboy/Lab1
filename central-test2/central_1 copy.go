@@ -17,6 +17,52 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+func ConexionGRPC2(mensaje string, servidor string){
+	
+	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
+	host :="localhost"
+	var puerto, nombre string
+	
+	if servidor == "America"{
+		//host :="dist105.inf.santiago.usm.cl"
+		puerto ="50052"
+		nombre ="America"
+	}else if servidor == "Asia"{
+		//host :="dist106.inf.santiago.usm.cl"
+		puerto ="50053"
+		nombre ="Asia"
+	}else if servidor == "Europa"{
+		//host="dist107.inf.santiago.usm.cl"
+		puerto ="50054"
+		nombre ="Europa"
+	}else if servidor == "Oceania"{
+		//host="dist108.inf.santiago.usm.cl"
+		puerto ="50055"
+		nombre ="Oceania"
+	}
+	log.Println("Connecting to server "+nombre+": "+host+":"+puerto+". . .")
+	conn, err := grpc.Dial(host+":"+puerto,grpc.WithTransportCredentials(insecure.NewCredentials()))	
+	if err != nil {
+		log.Fatalf("Failed to connect: %v", err)
+	}
+	fmt.Printf("Esperando\n")
+	defer conn.Close()
+
+	c := pb.NewChatServiceClient(conn)
+	for {
+		log.Println("Sending message to server "+nombre+": "+mensaje)
+		response, err := c.SayHello(context.Background(), &pb.Message{Body: mensaje})
+		if err != nil {
+			log.Println("Server "+nombre+" not responding: ")
+			log.Println("Trying again in 10 seconds. . .")
+			time.Sleep(10 * time.Second)
+			continue
+		}
+		log.Printf("Response from server "+nombre+": "+"%s", response.Body)
+		break
+	}
+}
+
 func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 	
 	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
@@ -117,18 +163,29 @@ func main() {
 	
 	var llaves int
 	for {
-		var wg sync.WaitGroup
-		wg.Add(1)
-		go ConexionGRPC("LLaves Disponibles","America", &wg)
-		wg.Add(1)
-		go ConexionGRPC("LLaves Disponibles","Asia", &wg)
-		wg.Wait()
+			contador++
+			if iterations != -1 {
+				if contador == iterations+1{
+					break
+				}
+			}
+			var wg sync.WaitGroup
+			wg.Add(1)
+			go ConexionGRPC("LLaves Disponibles","America", &wg)
+			wg.Add(1)
+			go ConexionGRPC("LLaves Disponibles","Europa", &wg)
+			wg.Wait()
 		
-		llaves= rand.Intn(max-min) + min
-		fmt.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
-		contador++
-		if iterations == -1 {
-			fmt.Printf("Generación %d/infinito\n", contador)
+			llaves= rand.Intn(max-min) + min
+			fmt.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
+			
+			if iterations == -1 {
+				fmt.Printf("Generación %d/infinito\n", contador)
+			}else{
+				fmt.Printf("Generación %d/%d\n", contador,iterations)
+			}
+
+			
 			//Mensaje Rabbit
 			forever := make(chan bool)
 			go func() {
@@ -146,27 +203,8 @@ func main() {
 					}
 
 					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
-
-					if  subcadenas[0] == "Asia" {
-						wg.Add(1)
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
-						forever <- true
-						
-					}else if subcadenas[0] == "America"{
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"America", &wg)
-						forever <- true
-					} else if subcadenas[0] == "Europa"{
-
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Europa", &wg)
-						forever <- true
-					} else if subcadenas[0] == "Oceania"{
-
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Oceania", &wg)
-						forever <- true
-					}else{
-						fmt.Printf("No entre a ningun if")
-					}
-
+					go ConexionGRPC2(strconv.Itoa(llaves_pedidas),subcadenas[0])
+					forever <- true
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
 
 					
@@ -177,69 +215,7 @@ func main() {
 			}()
 			fmt.Println("Waiting for messages...")
 			<-forever
-
-		}else {
-			fmt.Printf("Generación %d/%d\n", contador, iterations)
-			//Mensaje Rabbit
-			forever := make(chan bool)
-			go func() {
-				num_cola:=0
-				for msg := range msgs {
-					fmt.Printf("Received Message: %s\n", msg.Body)
-					subcadenas := strings.Split(string(msg.Body), "-")
-					
-					llaves_pedidas,_:=strconv.Atoi(subcadenas[1])
-
-					if llaves_pedidas > llaves{
-						llaves_pedidas=llaves
-					}
-					if llaves != 0{
-						llaves-=llaves_pedidas
-					}
-
-					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
-
-					if  subcadenas[0] == "Asia" {
-						time.Sleep(5 * time.Second)
-						wg.Add(1)
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
-						num_cola++
-						
-					}else if subcadenas[0] == "America"{
-
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"America", &wg)
-						num_cola++
-					} else if subcadenas[0] == "Europa"{
-
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Europa", &wg)
-						num_cola++
-					} else if subcadenas[0] == "Oceania"{
-
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Oceania", &wg)
-						num_cola++
-					}else{
-						fmt.Printf("No entre a ningun if")
-					}
-
-					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
-					
-					
-					if num_cola == 1{
-						
-						forever <- true
-					}
-				}
-				time.Sleep(5 * time.Second)
-				
-				
-			}()
-			fmt.Println("Waiting for messages...")
-			<-forever
-
-			if contador >= iterations{
-				break
-			}
-		}
+		
 	}
 	
 
