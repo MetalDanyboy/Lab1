@@ -109,7 +109,7 @@ func main() {
     fmt.Println("Directorio actual:", directorioActual)
 	
 
-	content, err := os.ReadFile("/home/dist/Lab1/Regionales/Asia/'parametros de inicio.txt'")
+	content, err := os.ReadFile("/home/dist/Lab1/Regionales/Asia/parametros_de_inicio.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
