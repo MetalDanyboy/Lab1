@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	pb "github.com/MetalDanyboy/Lab1/protos"
@@ -144,6 +145,8 @@ func main() {
 	server := &ServerHello{channel: channel} // Pasamos el canal de RabbitMQ al servidor gRPC
 	pb.RegisterChatServiceServer(grpcServer, server)
 
+	wg:=sync.WaitGroup{}
+	wg.Add(1)
 	go grpcServer.Serve(lis)
 	/*if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
@@ -158,12 +161,12 @@ func main() {
 	grpcServer2 := grpc.NewServer()
 	server2 := &ServerNumber{}
 	pb.RegisterNumberServiceServer(grpcServer2, server2)
-
+	wg.Add(1)
 	go grpcServer2.Serve(lis2)
 	/*if err := grpcServer.Serve(lis2); err != nil {
 		panic(err)
 	}*/
-
+	wg.Wait()
 	err = channel.Publish(
 		"",
 		"testing",
