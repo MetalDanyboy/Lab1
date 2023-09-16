@@ -1,43 +1,167 @@
 package main
 
 import (
-	//"tim"
-	"strconv"
-	"strings"
-
-	//"math"
-	//"net"
-	//"context"
+	"context"
 	"fmt"
 	"log"
+	"math/rand"
+	"net"
 	"os"
+	"strconv"
+	"strings"
+	"time"
 
-	//"os/signal"
-	//"sync"
+	pb "github.com/MetalDanyboy/Lab1/protos"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
+var server_name string
+var cant_registrados int
+var cant_llaves_pedidas int
 
-func main() {
-    content, err := os.ReadFile("parametros de inicio.txt")
-    if err != nil {
-        log.Fatal(err)
-    }
+type Server struct {
+	pb.UnimplementedChatServiceServer
+	channel *amqp.Channel // Agregamos un campo para el canal de RabbitMQ
+}
 
-	var initial_users int
-	//print line from content
-	for _, line := range strings.Split(string(content), "\n") {
-		initial_users, err = strconv.Atoi(line)
+func Pedir_LLaves(cant_inicial int, cant_pedidas int)(int){
+
+	if cant_inicial > 0 {
+		if cant_pedidas == 0{
+			num := int(cant_inicial/2)
+			p := int(num/5)
+			llaves_a_pedir := rand.Intn((num+p)-(num-p)+1) + (num - p)
+			cant_llaves_pedidas=llaves_a_pedir
+			return llaves_a_pedir
+		}else{
+			num := int(cant_inicial/2)
+			p := int(num/5)
+			llaves_a_pedir := rand.Intn((num+p)-(num-p)+1) + (num - p)
+			cant_llaves_pedidas-=llaves_a_pedir
+			return llaves_a_pedir
+		}
+	}else{
+		return 0
+	}
+}
+
+
+func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, error) {
+	log.Printf("Receive message body from client: %s", in.Body)
+
+	// Enviamos un mensaje a RabbitMQ
+	time.Sleep(5 * time.Second)
+	inMessage:=string(in.Body)
+	if inMessage == "LLaves Disponibles"{
+		llaves_pedidas:=Pedir_LLaves(cant_registrados,cant_llaves_pedidas)
+		err := s.channel.Publish(
+			"",        // exchange
+			"testing", // key
+			false,     // mandatory
+			false,     // immediate
+			amqp.Publishing{
+				ContentType: "text/plain",
+				//Body:        []byte(server_name+"-"+string(cant_llaves_pedidas)),
+				Body:       []byte(server_name+"-"+strconv.Itoa(llaves_pedidas)),
+				 // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+			},
+		)
+		fmt.Println("Mande "+strconv.Itoa(llaves_pedidas)+" llaves")
 		if err != nil {
-			fmt.Println("Error reading file",err)
-			return
+			log.Printf("Error al publicar en RabbitMQ: %s", err)
 		}
 	}
-	fmt.Println("Initial users: ",initial_users)
 
-	conn, err:= grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	return &pb.Message{Body: "OK"}, nil
+}
+
+func(s *Server) SendKeys(ctx context.Context, in *pb.NumberRequest) (*pb.NumberResponse, error) {
+	log.Printf("Receive Keys from client: %d", in.Number)
+	cant_registrados-=int(in.Number)
+	return &pb.NumberResponse{Response: "OK"}, nil
+
+}
+
+func main() {
+	
+	//rand.Seed(time.Now().UnixNano())
+	directorioActual, err := os.Getwd()
+    if err != nil {
+        fmt.Println("Error al obtener el directorio actual:", err)
+        return
+    }
+    content, err := os.ReadFile(directorioActual+"/Regionales/Asia/parametros_de_inicio.txt")
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatal(err)
 	}
-	fmt.Println("Connection: ",conn)
-}	
+	lineas := strings.Split(string(content), "\n")
+	cant_registrados, err= strconv.Atoi(lineas[0])
+	if err != nil {
+		log.Fatal(err)
+	}
+	cant_llaves_pedidas=0
+	
+	
+	server_name = "America"
+	//addr_Rabbit := "localhost"
+	addr_Rabbit := "dist106.inf.santiago.usm.cl"
+	connection, err := amqp.Dial("amqp://guest:guest@" + addr_Rabbit + ":5672/")
+	if err != nil {
+		panic(err)
+	}
+	defer connection.Close()
+
+	fmt.Println("Successfully connected to RabbitMQ instance")
+
+	channel, err := connection.Channel()
+	if err != nil {
+		panic(err)
+	}
+	defer channel.Close()
+
+	queue, err := channel.QueueDeclare(
+		"testing",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	puerto := ":50052"
+	lis, err := net.Listen("tcp", puerto)
+	fmt.Printf("Escuchando %s\n", puerto)
+	if err != nil {
+		panic(err)
+	}
+
+	grpcServer := grpc.NewServer()
+	server := &Server{channel: channel} // Pasamos el canal de RabbitMQ al servidor gRPC
+	pb.RegisterChatServiceServer(grpcServer, server)
+
+	if err := grpcServer.Serve(lis); err != nil {
+		panic(err)
+	}
+
+	err = channel.Publish(
+		"",
+		"testing",
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte("186"),
+		},
+	)
+
+	fmt.Println("Mande 186 llaves")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Queue status:", queue)
+	fmt.Println("Successfully published message")
+}
