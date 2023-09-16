@@ -179,7 +179,7 @@ func main() {
 					num_cola++
 					if num_cola == 1{
 					
-						break
+						forever <- true
 					}
 				}
 				time.Sleep(5 * time.Second)
@@ -226,7 +226,7 @@ func main() {
 					num_cola++
 					if num_cola == 1{
 						
-						break
+						forever <- true
 					}
 				}
 				time.Sleep(5 * time.Second)
