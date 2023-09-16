@@ -5,7 +5,8 @@ build:
 	docker build -t lab1:latest .
 docker-central:
 ifeq ($(HOST),localhost)
-	docker run -d -it --rm --name central --expose 50052 lab1:latest go run Central/central.go
+	docker rm -f central
+	docker run -d -it --name central --expose 50052 lab1:latest go run Central/central.go
 else
 	echo "Ejecutar SOLO en dist105"
 endif
@@ -22,8 +23,6 @@ ifeq ($(HOST),dist107)
 endif
 ifeq ($(HOST),dist108)
 	docker run  -it --rm --name regional -p 50055:50055 --expose 50055 lab1:latest go run Regionales/Oceania/regional.go
-else
-	echo "Adios"
 endif
 
 docker-rabbit:
