@@ -23,10 +23,10 @@ type Server struct {
 	channel *amqp.Channel // Agregamos un campo para el canal de RabbitMQ
 }
 
-func Pedir_LLaves(cant_inicial int, cant_llaves_pedidas int)(int){
+func Pedir_LLaves(cant_inicial int, cant_pedidas int)(int){
 
 	if cant_inicial != 0 {
-		if cant_llaves_pedidas == 0{
+		if cant_pedidas == 0{
 			num := int(cant_inicial/2)
 			p := int(num/5)
 
@@ -56,9 +56,9 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 	inMessage:=string(in.Body)
 	fmt.Println("inMessage-->"+inMessage)
 	if inMessage == "LLaves Disponibles"{
-		log.Printf("en el IF inMessage-->cant_llaves_pedidas: %d", cant_llaves_pedidas)
-		cant_llaves_pedidas=Pedir_LLaves(cant_registrados,0)
-		fmt.Println("cant_llaves_pedidas-->"+string(cant_llaves_pedidas))
+		log.Printf("en el IF inMessage-->llaves_pedidas: %d", cant_llaves_pedidas)
+		llaves_pedidas:=Pedir_LLaves(cant_registrados,0)
+		fmt.Println("llaves_pedidas-->"+string(llaves_pedidas))
 		err := s.channel.Publish(
 			"",        // exchange
 			"testing", // key
@@ -67,10 +67,10 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 			amqp.Publishing{
 				ContentType: "text/plain",
 				//Body:        []byte(server_name+"-"+string(cant_llaves_pedidas)),
-				Body:       []byte(server_name+"-"+string(cant_llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+				Body:       []byte(server_name+"-"+string(llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
 			},
 		)
-		fmt.Println("Mande "+string(cant_llaves_pedidas)+" llaves")
+		fmt.Println("Mande "+string(llaves_pedidas)+" llaves")
 		if err != nil {
 			log.Printf("Error al publicar en RabbitMQ: %s", err)
 		}
