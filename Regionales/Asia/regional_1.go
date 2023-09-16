@@ -58,7 +58,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 	if inMessage == "LLaves Disponibles"{
 		log.Printf("en el IF inMessage-->llaves_pedidas: %d", cant_llaves_pedidas)
 		llaves_pedidas:=Pedir_LLaves(cant_registrados,0)
-		fmt.Println("llaves_pedidas-->"+string(llaves_pedidas))
+		fmt.Println("llaves_pedidas-->"+strconv.Itoa(llaves_pedidas))
 		err := s.channel.Publish(
 			"",        // exchange
 			"testing", // key
@@ -67,10 +67,10 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 			amqp.Publishing{
 				ContentType: "text/plain",
 				//Body:        []byte(server_name+"-"+string(cant_llaves_pedidas)),
-				Body:       []byte(server_name+"-"+string(llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+				Body:       []byte(server_name+"-"+strconv.Itoa(llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
 			},
 		)
-		fmt.Println("Mande "+string(llaves_pedidas)+" llaves")
+		fmt.Println("Mande "+strconv.Itoa(llaves_pedidas)+" llaves")
 		if err != nil {
 			log.Printf("Error al publicar en RabbitMQ: %s", err)
 		}
