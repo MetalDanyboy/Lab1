@@ -168,8 +168,16 @@ func main() {
 	// ...
 	
 	var llaves int
-	for {
+	for {	
 			contador++
+			if iterations == -1 {
+				fmt.Printf("Generación %d/infinito\n", contador)
+			}else{
+				fmt.Printf("Generación %d/%d\n", contador,iterations)
+			}
+			llaves= rand.Intn(max-min) + min
+			log.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
+			
 			if iterations != -1 {
 				if contador == iterations+1{
 					break
@@ -186,14 +194,9 @@ func main() {
 			go ConexionGRPC("LLaves Disponibles","Oceania", &wg)
 			wg.Wait()
 		
-			llaves= rand.Intn(max-min) + min
-			log.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
 			
-			if iterations == -1 {
-				fmt.Printf("Generación %d/infinito\n", contador)
-			}else{
-				fmt.Printf("Generación %d/%d\n", contador,iterations)
-			}
+			
+			
 
 			
 			//Mensaje Rabbit
@@ -216,8 +219,6 @@ func main() {
 					go ConexionGRPC2(llaves_pedidas,subcadenas[0])
 					forever <- true
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
-
-					
 					
 				}
 				time.Sleep(5 * time.Second)
@@ -226,7 +227,7 @@ func main() {
 			fmt.Println("Waiting for messages...")
 			<-forever
 		
-	}
+		}
 	
 
 	
