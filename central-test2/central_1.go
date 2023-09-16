@@ -177,7 +177,7 @@ func main() {
 						fmt.Printf("No entre a ningun if")
 					}
 
-					fmt.Printf("Se inscribieron %d cupos de servidor /s", llaves_pedidas, subcadenas[0]))
+					fmt.Printf("Se inscribieron %d cupos de servidor %s", llaves_pedidas, subcadenas[0])
 
 					num_cola++
 					if num_cola == 1{
@@ -229,7 +229,7 @@ func main() {
 						fmt.Printf("No entre a ningun if")
 					}
 
-					fmt.Printf("Se inscribieron %d cupos de servidor /s", llaves_pedidas, subcadenas[0]))
+					fmt.Printf("Se inscribieron %d cupos de servidor %s", llaves_pedidas, subcadenas[0])
 					
 					num_cola++
 					if num_cola == 1{
