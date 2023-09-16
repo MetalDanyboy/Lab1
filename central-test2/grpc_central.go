@@ -178,10 +178,11 @@ func main() {
 
 					num_cola++
 					if num_cola == 1{
-						time.Sleep(5 * time.Second)
+						
 						forever <- true
 					}
 				}
+				time.Sleep(5 * time.Second)
 				
 			}()
 			fmt.Println("Waiting for messages...")
@@ -224,10 +225,11 @@ func main() {
 					}
 					num_cola++
 					if num_cola == 1{
-						time.Sleep(5 * time.Second)
+						
 						forever <- true
 					}
 				}
+				time.Sleep(5 * time.Second)
 				
 				
 			}()
