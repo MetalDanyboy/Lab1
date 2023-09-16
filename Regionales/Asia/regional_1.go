@@ -107,7 +107,7 @@ func main() {
     }
 
     fmt.Println("Directorio actual:", directorioActual)
-	}
+	
 
 	content, err := os.ReadFile("Lab1/Regionales/Asia/'parametros de inicio.txt'")
 	if err != nil {
