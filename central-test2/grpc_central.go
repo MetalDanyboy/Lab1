@@ -155,7 +155,9 @@ func main() {
 					if llaves_pedidas > llaves{
 						llaves_pedidas=llaves
 					}
-					llaves-=llaves_pedidas
+					if llaves != 0{
+						llaves-=llaves_pedidas
+					}
 
 					if  subcadenas[0] == "Asia" {
 						wg.Add(1)
@@ -175,13 +177,13 @@ func main() {
 
 
 					num_cola++
-					fmt.Println(num_cola)
+					if num_cola == 1{
+					
+						break
+					}
 				}
 				time.Sleep(5 * time.Second)
-				if num_cola == 4{
-					forever <- false
-					return
-				}
+				
 			}()
 			fmt.Println("Waiting for messages...")
 			<-forever
@@ -201,7 +203,9 @@ func main() {
 					if llaves_pedidas > llaves{
 						llaves_pedidas=llaves
 					}
-					llaves-=llaves_pedidas
+					if llaves != 0{
+						llaves-=llaves_pedidas
+					}
 
 					if  subcadenas[0] == "Asia" {
 						fmt.Printf("Entre a Asia\n")
@@ -221,12 +225,13 @@ func main() {
 						fmt.Printf("No entre a ningun if")
 					}
 					num_cola++
+					if num_cola == 1{
+						
+						break
+					}
 				}
 				time.Sleep(5 * time.Second)
-				if num_cola == 4{
-					forever <- false
-					return
-				}
+				
 			}()
 			fmt.Println("Waiting for messages...")
 			<-forever
