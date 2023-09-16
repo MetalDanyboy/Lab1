@@ -167,21 +167,6 @@ func main() {
 		panic(err)
 	}*/
 	wg.Wait()
-	err = channel.Publish(
-		"",
-		"testing",
-		false,
-		false,
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte("186"),
-		},
-	)
-
-	fmt.Println("Mande 186 llaves")
-	if err != nil {
-		panic(err)
-	}
 
 	fmt.Println("Queue status:", queue)
 	fmt.Println("Successfully published message")
