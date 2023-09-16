@@ -27,7 +27,7 @@ func Pedir_LLaves(cant_inicial int, cant_llaves_pedidas int)(int){
 
 	if cant_inicial != 0 {
 		if cant_llaves_pedidas == 0{
-			num := cant_inicial/2
+			num := int(cant_inicial/2)
 			p := int(num* (1/5))
 			llaves_a_pedir := rand.Intn((num+p)-(num-p)) + (num - p)
 	
