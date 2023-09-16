@@ -201,11 +201,11 @@ func main() {
 		
 			//Mensaje Rabbit
 			var wg2 sync.WaitGroup
-			wg2.Add(1)
 			forever := make(chan bool)
+			wg2.Add(1)
 			go func() {
 				//num_cola:=0
-				
+				var wg3 sync.WaitGroup
 				for msg := range msgs {
 					fmt.Printf("Received Message: %s\n", msg.Body)
 					subcadenas := strings.Split(string(msg.Body), "-")
@@ -219,14 +219,15 @@ func main() {
 					}
 
 					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
-					
-					go ConexionGRPC2(llaves_pedidas,subcadenas[0], &wg2)
-					
+					wg3.Add(1)
+					go ConexionGRPC2(llaves_pedidas,subcadenas[0], &wg3)
+					wg3.Wait()
 
 					forever <- true
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
 				}
 				time.Sleep(5 * time.Second)
+				defer wg2.Done()
 			}()
 			wg2.Wait()
 			fmt.Println("Waiting for messages...")
