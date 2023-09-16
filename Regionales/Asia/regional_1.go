@@ -54,7 +54,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 	time.Sleep(5 * time.Second)
 	inMessage:=string(in.Body)
 	if inMessage == "LLaves Disponibles"{
-		llaves_pedidas:=Pedir_LLaves(cant_registrados,0)
+		llaves_pedidas:=Pedir_LLaves(cant_registrados,cant_llaves_pedidas)
 		err := s.channel.Publish(
 			"",        // exchange
 			"testing", // key
@@ -70,28 +70,6 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 		fmt.Println("Mande "+strconv.Itoa(llaves_pedidas)+" llaves")
 		if err != nil {
 			log.Printf("Error al publicar en RabbitMQ: %s", err)
-		}
-	}else if inMessage != "LLaves Disponibles"{
-		registrados , _ := strconv.Atoi(in.Body)
-		cant_registrados-=registrados
-		if cant_registrados <= 0{
-			return &pb.Message{Body: "OK"}, nil
-		}else{
-			cant_llaves_pedidas=Pedir_LLaves(cant_registrados,cant_llaves_pedidas)
-			err := s.channel.Publish(
-				"",        // exchange
-				"testing", // key
-				false,     // mandatory
-				false,     // immediate
-				amqp.Publishing{
-					ContentType: "text/plain",
-					Body:        []byte(server_name+"-"+strconv.Itoa(cant_llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
-				},
-			)
-			fmt.Println("Mande "+strconv.Itoa(cant_llaves_pedidas)+" llaves")
-			if err != nil {
-				log.Printf("Error al publicar en RabbitMQ: %s", err)
-			}
 		}
 	}
 
@@ -114,6 +92,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	cant_llaves_pedidas=0
 	
 	
 	server_name = "Asia"
