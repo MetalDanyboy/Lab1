@@ -164,24 +164,28 @@ func main() {
 					if  subcadenas[0] == "Asia" {
 						wg.Add(1)
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
+						num_cola++
 						
 					}else if subcadenas[0] == "America"{
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"America", &wg)
+						num_cola++
 					} else if subcadenas[0] == "Europa"{
 
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Europa", &wg)
+						num_cola++
 					} else if subcadenas[0] == "Oceania"{
 
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Oceania", &wg)
+						num_cola++
 					}else{
 						fmt.Printf("No entre a ningun if")
 					}
 
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
 
-					num_cola++
+					
 					if num_cola == 1{
-						
+						wg.Wait()
 						forever <- true
 					}
 				}
@@ -216,23 +220,27 @@ func main() {
 						time.Sleep(5 * time.Second)
 						wg.Add(1)
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
+						num_cola++
 						
 					}else if subcadenas[0] == "America"{
 
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"America", &wg)
+						num_cola++
 					} else if subcadenas[0] == "Europa"{
 
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Europa", &wg)
+						num_cola++
 					} else if subcadenas[0] == "Oceania"{
 
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Oceania", &wg)
+						num_cola++
 					}else{
 						fmt.Printf("No entre a ningun if")
 					}
 
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
 					
-					num_cola++
+					
 					if num_cola == 1{
 						
 						forever <- true
