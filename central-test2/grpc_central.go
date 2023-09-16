@@ -180,6 +180,7 @@ func main() {
 				time.Sleep(5 * time.Second)
 				if num_cola == 4{
 					forever <- false
+					return
 				}
 			}()
 			fmt.Println("Waiting for messages...")
@@ -224,6 +225,7 @@ func main() {
 				time.Sleep(5 * time.Second)
 				if num_cola == 4{
 					forever <- false
+					return
 				}
 			}()
 			fmt.Println("Waiting for messages...")
