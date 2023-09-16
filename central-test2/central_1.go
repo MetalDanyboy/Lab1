@@ -144,13 +144,6 @@ func main() {
 	//regional:50052
 	//172.21.0.1:50052
 	//"dist106.inf.santiago.usm.cl:50052"
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go ConexionGRPC("LLaves Disponibles","America", &wg)
-	wg.Add(1)
-	go ConexionGRPC("LLaves Disponibles","Asia", &wg)
-	wg.Wait()
-
 
 	//...CONEXION RABBITMQ...
 	addr := "dist106.inf.santiago.usm.cl"
@@ -194,7 +187,7 @@ func main() {
 		wg.Add(1)
 		go ConexionGRPC("LLaves Disponibles","Asia", &wg)
 		wg.Wait()
-		
+
 		llaves= rand.Intn(max-min) + min
 		fmt.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
 		contador++
