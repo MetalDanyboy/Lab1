@@ -37,8 +37,8 @@ func Pedir_LLaves(cant_inicial int, cant_llaves_pedidas int)(int){
 			log.Printf("llaves_a_pedir: %d, cant_llaves_pedidas: %d", llaves_a_pedir, cant_llaves_pedidas)
 			return cant_llaves_pedidas
 		}else{
-			num := cant_inicial/2
-			p := int(num* (1/5))
+			num := int(cant_inicial/2)
+			p := int(num/5)
 			llaves_a_pedir := rand.Intn((num+p)-(num-p)) + (num - p)
 			cant_llaves_pedidas-=llaves_a_pedir
 			return cant_llaves_pedidas
@@ -102,7 +102,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 
 func main() {
 	
-
+	log.Printf("cant_llaves_pedidas: %d", cant_llaves_pedidas)
 	directorioActual, err := os.Getwd()
     if err != nil {
         fmt.Println("Error al obtener el directorio actual:", err)
