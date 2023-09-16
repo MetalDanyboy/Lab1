@@ -144,9 +144,10 @@ func main() {
 	server := &ServerHello{channel: channel} // Pasamos el canal de RabbitMQ al servidor gRPC
 	pb.RegisterChatServiceServer(grpcServer, server)
 
-	if err := grpcServer.Serve(lis); err != nil {
+	go grpcServer.Serve(lis)
+	/*if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
-	}
+	}*/
 
 	puerto2 := ":50054"
 	lis2, err := net.Listen("tcp", puerto2)
@@ -157,9 +158,11 @@ func main() {
 	grpcServer2 := grpc.NewServer()
 	server2 := &ServerNumber{}
 	pb.RegisterNumberServiceServer(grpcServer2, server2)
-	if err := grpcServer.Serve(lis2); err != nil {
+
+	go grpcServer2.Serve(lis2)
+	/*if err := grpcServer.Serve(lis2); err != nil {
 		panic(err)
-	}
+	}*/
 
 	err = channel.Publish(
 		"",
