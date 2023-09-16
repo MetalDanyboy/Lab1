@@ -176,7 +176,7 @@ func main() {
 			}
 			var wg sync.WaitGroup
 			wg.Add(1)
-			go ConexionGRPC("LLaves Disponibles","America", &wg)
+			go ConexionGRPC("LLaves Disponibles","Asia", &wg)
 			wg.Add(1)
 			go ConexionGRPC("LLaves Disponibles","Europa", &wg)
 			wg.Wait()
