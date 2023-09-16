@@ -75,9 +75,9 @@ func main() {
 	//"dist106.inf.santiago.usm.cl:50052"
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go ConexionGRPC("Hola desde el central","America", &wg)
+	go ConexionGRPC("LLaves Disponibles","America", &wg)
 	wg.Add(1)
-	go ConexionGRPC("Hola desde el central","Asia", &wg)
+	go ConexionGRPC("LLaves Disponibles","Asia", &wg)
 	wg.Wait()
 
 

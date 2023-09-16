@@ -4,43 +4,102 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
+	"os"
+	"strconv"
 
 	pb "github.com/MetalDanyboy/Lab1/protos"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc"
 )
 var server_name string
+var cant_registrados int
+var cant_llaves_pedidas int
 
 type Server struct {
 	pb.UnimplementedChatServiceServer
 	channel *amqp.Channel // Agregamos un campo para el canal de RabbitMQ
 }
 
+func Pedir_LLaves(cant_inicial int, cant_llaves_pedidas int)(int){
+
+	if cant_inicial != 0 {
+		if cant_llaves_pedidas == 0{
+			num := cant_inicial/2
+			p := int(num* (1/5))
+			llaves_a_pedir := rand.Intn((num+p)-(num-p)) + (num - p)
+	
+			cant_llaves_pedidas=llaves_a_pedir
+			return cant_llaves_pedidas
+		}else{
+			num := cant_inicial/2
+			p := int(num* (1/5))
+			llaves_a_pedir := rand.Intn((num+p)-(num-p)) + (num - p)
+			cant_llaves_pedidas-=llaves_a_pedir
+			return cant_llaves_pedidas
+		}
+	}else{
+		return 0
+	}
+}
+
+
 func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, error) {
 	log.Printf("Receive message body from client: %s", in.Body)
 
 	// Enviamos un mensaje a RabbitMQ
-	err := s.channel.Publish(
-		"",        // exchange
-		"testing", // key
-		false,     // mandatory
-		false,     // immediate
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(server_name+"-186"), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
-		},
-	)
-	fmt.Println("Mande 186 llaves")
-	if err != nil {
-		log.Printf("Error al publicar en RabbitMQ: %s", err)
+	if in.Body == "LLaves Disponibles"{
+		cant_llaves_pedidas=Pedir_LLaves(cant_registrados,0)
+		err := s.channel.Publish(
+			"",        // exchange
+			"testing", // key
+			false,     // mandatory
+			false,     // immediate
+			amqp.Publishing{
+				ContentType: "text/plain",
+				Body:        []byte(server_name+"-"+string(cant_llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+			},
+		)
+		fmt.Println("Mande "+string(cant_llaves_pedidas)+" llaves")
+		if err != nil {
+			log.Printf("Error al publicar en RabbitMQ: %s", err)
+		}
+	}else if in.Body != "LLaves Disponibles"{
+		registrados , _ := strconv.Atoi(in.Body)
+		cant_registrados-=registrados
+		if cant_registrados <= 0{
+			return &pb.Message{Body: "OK"}, nil
+		}else{
+			cant_llaves_pedidas=Pedir_LLaves(cant_registrados,cant_llaves_pedidas)
+			err := s.channel.Publish(
+				"",        // exchange
+				"testing", // key
+				false,     // mandatory
+				false,     // immediate
+				amqp.Publishing{
+					ContentType: "text/plain",
+					Body:        []byte(server_name+"-"+string(cant_llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+				},
+			)
+			fmt.Println("Mande "+string(cant_llaves_pedidas)+" llaves")
+			if err != nil {
+				log.Printf("Error al publicar en RabbitMQ: %s", err)
+			}
+		}
 	}
-	
 
-	return &pb.Message{Body: "Hello From the Server!"}, nil
+	return &pb.Message{Body: "OK"}, nil
 }
 
 func main() {
+
+	content, err := os.ReadFile("parametros de inicio.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	cant_registrados, _= strconv.Atoi(string(content))
+
 	server_name = "Asia"
 	addr_Rabbit := "dist106.inf.santiago.usm.cl"
 	connection, err := amqp.Dial("amqp://guest:guest@" + addr_Rabbit + ":5672/")
