@@ -15,22 +15,44 @@ import (
 
 type Server struct {
 	pb.UnimplementedChatServiceServer
+	channel *amqp.Channel // Agregamos un campo para el canal de RabbitMQ
 	mensaje string
 }
 
-func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, error) {
+/*func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, error) {
 	log.Printf("Receive message body from Central: %s", in.Body)
 	message := in.GetBody()
 
     // Almacena el mensaje en la variable miembro.
     s.mensaje = message
 	return &pb.Message{Body: "Hello From the Server!"}, nil
-}
+}*/
 
+
+func (s Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, error) {
+    log.Printf("Receive message body from client: %s", in.Body)
+
+    // Enviamos un mensaje a RabbitMQ
+    err := s.channel.Publish(
+        "",        // exchange
+        "testing", // key
+        false,     // mandatory
+        false,     // immediate
+        amqp.Publishing{
+            ContentType: "text/plain",
+            Body:        []byte("186"), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+        },
+    )
+    if err != nil {
+        log.Printf("Error al publicar en RabbitMQ: %s", err)
+    }
+
+    return &pb.Message{Body: "Hello From the Server!"}, nil
+}
 var grpcServer *grpc.Server
 var server *Server
 
-func StartGrpcServer() (socket net.Listener) {
+func StartGrpcServer(channel ) (socket net.Listener) {
 	//Grpc
 	puerto := ":50053"
 	lis, err := net.Listen("tcp", puerto)
@@ -40,7 +62,7 @@ func StartGrpcServer() (socket net.Listener) {
 	}
 
 	grpcServer = grpc.NewServer()
-	server = &Server{}
+	server = &Server{channel: channel}
 	pb.RegisterChatServiceServer(grpcServer, server)
 
 	return lis
@@ -83,39 +105,6 @@ func ServidorGRPC()(string){
 	return server.mensaje
 }
 
-func ListenAndClose() (string){
-    puerto := ":50053"
-    lis, err := net.Listen("tcp", puerto)
-    if err != nil {
-        log.Fatalf("failed to listen: %v", err)
-    }
-
-    grpcServer := grpc.NewServer()
-    server := &Server{} // Crea una instancia del servidor
-    pb.RegisterChatServiceServer(grpcServer, server) // Registra el servidor
-
-    log.Printf("Escuchando %s\n", puerto)
-
-    // Crea un contexto con cancelación
-    ctx, cancel := context.WithCancel(context.Background())
-    defer cancel() // Asegúrate de que cancel se llame al final
-
-    // Inicia el servidor gRPC en una goroutine
-    go func() {
-        if err := grpcServer.Serve(lis); err != nil {
-            log.Fatalf("failed to serve: %s", err)
-        }
-    }()
-
-    // Espera hasta que el contexto se cancele (después de recibir el primer mensaje)
-    <-ctx.Done()
-
-    // Cierra la conexión de escucha
-    lis.Close()
-    grpcServer.Stop()
-	return server.mensaje
-}
-
 var msj string
 func main() {
 	//Conexion Rabbit
@@ -149,7 +138,7 @@ func main() {
 	}
 
 	//msj=ServidorGRPC()
-	msj=ListenAndClose()
+	msj=ServidorGRPC()
 	if msj == "Hola desde el central"{
 		//Mensaje Rabbit
 		err= channel.PublishWithContext(
