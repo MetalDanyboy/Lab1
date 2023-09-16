@@ -19,9 +19,13 @@ var server_name string
 var cant_registrados int
 var cant_llaves_pedidas int
 
-type Server struct {
+type ServerHello struct {
 	pb.UnimplementedChatServiceServer
 	channel *amqp.Channel // Agregamos un campo para el canal de RabbitMQ
+}
+
+type ServerNumber struct {
+	pb.UnimplementedNumberServiceServer
 }
 
 func Pedir_LLaves(cant_inicial int, cant_pedidas int)(int){
@@ -47,7 +51,7 @@ func Pedir_LLaves(cant_inicial int, cant_pedidas int)(int){
 }
 
 
-func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, error) {
+func (s *ServerHello) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, error) {
 	log.Printf("Receive message body from client: %s", in.Body)
 
 	// Enviamos un mensaje a RabbitMQ
@@ -76,7 +80,11 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 }
 
 
-
+func(s *ServerNumber) SendKeys(ctx context.Context, in *pb.NumberRequest) (*pb.NumberResponse, error){
+	log.Printf("Receive message body from client: %s\n", strconv.Itoa(int(in.Number)))
+	cant_registrados-=int(in.Number)
+	return &pb.NumberResponse{Response: "OK"}, nil
+}
 
 func main() {
 	
@@ -133,9 +141,17 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	server := &Server{channel: channel} // Pasamos el canal de RabbitMQ al servidor gRPC
+	server := &ServerHello{channel: channel} // Pasamos el canal de RabbitMQ al servidor gRPC
 	pb.RegisterChatServiceServer(grpcServer, server)
 
+	if err := grpcServer.Serve(lis); err != nil {
+		panic(err)
+	}
+
+
+	grpcServer2 := grpc.NewServer()
+	server2 := &ServerNumber{}
+	pb.RegisterNumberServiceServer(grpcServer2, server2)
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
 	}

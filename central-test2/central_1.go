@@ -68,6 +68,56 @@ func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 	defer wg.Done()
 }
 
+
+func ConexionGRPC_LLaves(llaves int, servidor string , wg *sync.WaitGroup){
+	var host string
+	var puerto string
+	var nombre string
+	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
+	if servidor == "America"{
+		host="dist105.inf.santiago.usm.cl"
+		puerto="50052"
+		nombre="America"
+	}else if servidor == "Asia"{
+		
+		host="dist106.inf.santiago.usm.cl"
+		puerto="50053"
+		nombre="Asia"
+	}else if servidor == "Europa"{
+
+		host="dist107.inf.santiago.usm.cl"
+		puerto="50054"
+		nombre="Europa"
+	}else if servidor == "Oceania"{
+		
+		host="dist108.inf.santiago.usm.cl"
+		puerto="50055"
+		nombre="Oceania"
+	}
+	log.Println("Connecting to server "+nombre+": "+host+":"+puerto+". . .")
+	conn, err := grpc.Dial(host+":"+puerto,grpc.WithTransportCredentials(insecure.NewCredentials()))	
+	if err != nil {
+		log.Fatalf("Failed to connect: %v", err)
+	}
+	fmt.Printf("Esperando\n")
+	defer conn.Close()
+
+	c := pb.NewNumberServiceClient(conn)
+	for {
+		log.Println("Sending message to server "+nombre+": "+strconv.Itoa(llaves))
+		response, err := c.SendKeys(context.Background(), &pb.NumberRequest{Number: int32(llaves)})
+		if err != nil {
+			log.Println("Server "+nombre+" not responding: ")
+			log.Println("Trying again in 10 seconds. . .")
+			time.Sleep(10 * time.Second)
+			continue
+		}
+		log.Printf("Response from server "+nombre+": "+"%s", response.Response)
+		break
+	}
+	defer wg.Done()
+}
+
 func main() {
 	directorioActual, err := os.Getwd()
 	if err != nil {
@@ -163,27 +213,25 @@ func main() {
 
 					if  subcadenas[0] == "Asia" {
 						wg.Add(1)
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
+						ConexionGRPC_LLaves(llaves_pedidas,"Asia", &wg)
 						forever <- true
 						
 					}else if subcadenas[0] == "America"{
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"America", &wg)
+						ConexionGRPC_LLaves(llaves_pedidas,"America", &wg)
 						forever <- true
 					} else if subcadenas[0] == "Europa"{
 
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Europa", &wg)
+						ConexionGRPC_LLaves(llaves_pedidas,"Europa", &wg)
 						forever <- true
 					} else if subcadenas[0] == "Oceania"{
 
-						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Oceania", &wg)
+						ConexionGRPC_LLaves(llaves_pedidas,"Oceania", &wg)
 						forever <- true
 					}else{
 						fmt.Printf("No entre a ningun if")
 					}
 
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
-
-					
 					
 				}
 				time.Sleep(5 * time.Second)
