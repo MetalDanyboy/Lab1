@@ -99,7 +99,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 
 func main() {
 
-	content, err := os.ReadFile("parametros de inicio.txt")
+	content, err := os.ReadFile("/Regionales/Asia/parametros de inicio.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
