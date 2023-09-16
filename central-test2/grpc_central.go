@@ -117,14 +117,12 @@ func main() {
 	
 	//Mensaje Rabbit
 	forever := make(chan bool)
-	mensaje_cola := make(chan string)
 	go func() {
 		for msg := range msgs {
 			fmt.Printf("Received Message: %s\n", msg.Body)
 			fmt.Printf("antes de mensaje_Cola\n")
-			mensaje_cola <- string(msg.Body)
 			fmt.Printf("despues de mensaje_Cola\n")
-			subcadenas := strings.Split(<-mensaje_cola, "-")
+			subcadenas := strings.Split(string(msg.Body), "-")
 			
 			if  subcadenas[0] == "Asia" {
 				fmt.Printf("Entre a Asia\n")
@@ -146,6 +144,7 @@ func main() {
 	}()
 	fmt.Println("Waiting for messages...")
 	<-forever
+
 	
 	
 	//...
