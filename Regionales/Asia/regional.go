@@ -84,7 +84,7 @@ func(s *Server) SendKeys(ctx context.Context, in *pb.NumberRequest) (*pb.NumberR
 
 func main() {
 	
-	//rand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano())
 	directorioActual, err := os.Getwd()
     if err != nil {
         fmt.Println("Error al obtener el directorio actual:", err)

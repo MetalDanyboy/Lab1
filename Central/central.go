@@ -111,6 +111,7 @@ func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	log.Println("Starting Central. . .\n")
 
 	directorioActual, err := os.Getwd()
@@ -170,19 +171,22 @@ func main() {
 	var llaves int
 	for {	
 			contador++
-			if iterations == -1 {
-				fmt.Printf("Generación %d/infinito\n", contador)
-			}else{
-				fmt.Printf("Generación %d/%d\n", contador,iterations)
-			}
-			llaves= rand.Intn(max-min) + min
-			log.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
-			
 			if iterations != -1 {
 				if contador == iterations+1{
 					break
 				}
 			}
+			
+			if iterations == -1 {
+				fmt.Printf("\nGeneración %d/infinito\n", contador)
+			}else{
+				fmt.Printf("\nGeneración %d/%d\n", contador,iterations)
+			}
+			llaves= rand.Intn(max-min) + min
+
+			log.Printf("Llaves disponibles: %d\n\n", llaves)
+			
+			
 			var wg sync.WaitGroup
 			wg.Add(1)
 			go ConexionGRPC("LLaves Disponibles","America", &wg)
@@ -231,7 +235,7 @@ func main() {
 	
 
 	
-	log.Println("\nClosing Central. . .\n")
+	defer log.Println("Closing Central. . .\n")
 	//...
 
 	/*wg.Add(1)
