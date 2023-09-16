@@ -124,8 +124,10 @@ func main() {
 	fmt.Printf("\n--->Cantidad de registrados: %d\n",cant_registrados)
 	cant_llaves_pedidas=0
 	fmt.Println("Pedir llaves:",Pedir_LLaves(cant_registrados,0))
+	cant_llaves_pedidas=Pedir_LLaves(cant_registrados,0)
+	fmt.Println("cant_llaves_pedidas: ",cant_llaves_pedidas)
 
-	
+
 	server_name = "Asia"
 	addr_Rabbit := "dist106.inf.santiago.usm.cl"
 	connection, err := amqp.Dial("amqp://guest:guest@" + addr_Rabbit + ":5672/")
