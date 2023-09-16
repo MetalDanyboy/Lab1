@@ -51,8 +51,10 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 
 	// Enviamos un mensaje a RabbitMQ
 	inMessage:=string(in.Body)
+	fmt.Println("inMessage-->"+inMessage)
 	if inMessage == "LLaves Disponibles"{
 		cant_llaves_pedidas=Pedir_LLaves(cant_registrados,0)
+		fmt.Println("cant_llaves_pedidas-->"+string(cant_llaves_pedidas))
 		err := s.channel.Publish(
 			"",        // exchange
 			"testing", // key
@@ -61,7 +63,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 			amqp.Publishing{
 				ContentType: "text/plain",
 				//Body:        []byte(server_name+"-"+string(cant_llaves_pedidas)),
-				Body:       []byte(server_name+"-1000"), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+				Body:       []byte(server_name+"-"+string(cant_llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
 			},
 		)
 		fmt.Println("Mande "+string(cant_llaves_pedidas)+" llaves")
