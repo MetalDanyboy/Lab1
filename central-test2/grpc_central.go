@@ -120,8 +120,6 @@ func main() {
 	go func() {
 		for msg := range msgs {
 			fmt.Printf("Received Message: %s\n", msg.Body)
-			fmt.Printf("antes de mensaje_Cola\n")
-			fmt.Printf("despues de mensaje_Cola\n")
 			subcadenas := strings.Split(string(msg.Body), "-")
 			
 			if  subcadenas[0] == "Asia" {
@@ -142,6 +140,7 @@ func main() {
 				fmt.Printf("No entre a ningun if")
 			}
 		}
+		time.Sleep(5 * time.Second)
 	}()
 	fmt.Println("Waiting for messages...")
 	<-forever
