@@ -1,6 +1,5 @@
 clean:
-	docker rm  -f $(docker ps -aq)
-	docker rmi -f $(docker images -q)
+	./clean.sh
 
 docker-central:
 ifeq ($(HOST),dist105)
