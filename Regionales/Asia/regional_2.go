@@ -26,7 +26,7 @@ type Server struct {
 
 func Pedir_LLaves(cant_inicial int, cant_pedidas int)(int){
 
-	if cant_inicial != 0 {
+	if cant_inicial > 0 {
 		if cant_pedidas == 0{
 			num := int(cant_inicial/2)
 			p := int(num/5)
