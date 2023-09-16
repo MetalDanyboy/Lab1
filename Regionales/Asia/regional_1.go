@@ -34,6 +34,7 @@ func Pedir_LLaves(cant_inicial int, cant_llaves_pedidas int)(int){
 			llaves_a_pedir := rand.Intn((num+p)-(num-p)) + (num - p)
 	
 			cant_llaves_pedidas=llaves_a_pedir
+			log.Printf("llaves_a_pedir: %d, cant_llaves_pedidas: %d", llaves_a_pedir, cant_llaves_pedidas)
 			return cant_llaves_pedidas
 		}else{
 			num := cant_inicial/2
