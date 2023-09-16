@@ -1,5 +1,6 @@
 clean:
 	./clean.sh
+HOST = $(shell hostname)
 
 docker-central:
 ifeq ($(HOST),localhost)
@@ -8,7 +9,6 @@ else
 	echo "Ejecutar SOLO en dist105"
 endif
 
-HOST = $(shell hostname)
 docker-regional:
 ifeq ($(HOST),dist105)
 	docker run -d -it --name regional -p 50052:50052 --expose 50052 lab1:latest go run Regionales/America/regional.go
