@@ -30,15 +30,18 @@ func Pedir_LLaves(cant_inicial int, cant_pedidas int)(int){
 		if cant_pedidas == 0{
 			num := int(cant_inicial/2)
 			p := int(num/5)
+			fmt.Printf("num: %d , p: %d\n",num,p)
 			llaves_a_pedir := rand.Intn((num+p)-(num-p)) + (num - p)
-	
 			cant_llaves_pedidas=llaves_a_pedir
+			fmt.Printf("llaves_a_pedir: %d\n ",llaves_a_pedir)
 			return llaves_a_pedir
 		}else{
 			num := int(cant_inicial/2)
 			p := int(num/5)
+			fmt.Printf("num: %d , p: %d\n",num,p)
 			llaves_a_pedir := rand.Intn((num+p)-(num-p)) + (num - p)
 			cant_llaves_pedidas-=llaves_a_pedir
+			fmt.Printf("llaves_a_pedir: %d\n ",llaves_a_pedir)
 			return llaves_a_pedir
 		}
 	}else{
