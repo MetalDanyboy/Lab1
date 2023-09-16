@@ -99,6 +99,7 @@ func main() {
 		log.Fatal(err)
 	}
 	cant_registrados, _= strconv.Atoi(string(content))
+	cant_llaves_pedidas=0
 
 	server_name = "Asia"
 	addr_Rabbit := "dist106.inf.santiago.usm.cl"
