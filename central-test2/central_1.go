@@ -81,7 +81,7 @@ func ConexionGRPC_LLaves(llaves int, servidor string , wg *sync.WaitGroup){
 	}else if servidor == "Asia"{
 		
 		host="dist106.inf.santiago.usm.cl"
-		puerto="50053"
+		puerto="50054"
 		nombre="Asia"
 	}else if servidor == "Europa"{
 

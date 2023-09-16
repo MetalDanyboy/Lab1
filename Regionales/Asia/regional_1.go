@@ -148,11 +148,16 @@ func main() {
 		panic(err)
 	}
 
-
+	puerto2 := ":50054"
+	lis2, err := net.Listen("tcp", puerto2)
+	fmt.Printf("Escuchando %s\n", puerto2)
+	if err != nil {
+		panic(err)
+	}
 	grpcServer2 := grpc.NewServer()
 	server2 := &ServerNumber{}
 	pb.RegisterNumberServiceServer(grpcServer2, server2)
-	if err := grpcServer.Serve(lis); err != nil {
+	if err := grpcServer.Serve(lis2); err != nil {
 		panic(err)
 	}
 
