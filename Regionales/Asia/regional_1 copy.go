@@ -77,7 +77,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 }
 
 func(s *Server) SendKeys(ctx context.Context, in *pb.NumberRequest) (*pb.NumberResponse, error) {
-	log.Printf("Receive Keys from client: %s", in.Number)
+	log.Printf("Receive Keys from client: %d", in.Number)
 	cant_registrados-=int(in.Number)
 	return &pb.NumberResponse{Response: "OK"}, nil
 
