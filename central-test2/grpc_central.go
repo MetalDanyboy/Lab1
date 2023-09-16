@@ -154,10 +154,11 @@ func main() {
 					subcadenas := strings.Split(string(msg.Body), "-")
 					
 					llaves_pedidas,_:=strconv.Atoi(subcadenas[1])
-					llaves-=llaves_pedidas
-					if llaves <=0 {
-						return
+					if llaves_pedidas > llaves{
+						llaves_pedidas=llaves
 					}
+					llaves-=llaves_pedidas
+					
 					if  subcadenas[0] == "Asia" {
 						wg.Add(1)
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
@@ -197,7 +198,7 @@ func main() {
 					subcadenas := strings.Split(string(msg.Body), "-")
 					
 					llaves_pedidas,_:=strconv.Atoi(subcadenas[1])
-					
+
 					if llaves_pedidas > llaves{
 						llaves_pedidas=llaves
 					}
