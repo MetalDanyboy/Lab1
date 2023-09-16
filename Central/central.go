@@ -220,11 +220,12 @@ func main() {
 					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
 					wg2.Add(1)
 					go ConexionGRPC2(llaves_pedidas,subcadenas[0], &wg2)
-
+					wg2.Wait()
+					
 					forever <- true
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
 				}
-				wg2.Wait()
+				
 				time.Sleep(5 * time.Second)
 				
 			}()
