@@ -146,7 +146,7 @@ func main() {
 			//Mensaje Rabbit
 			forever := make(chan bool)
 			go func() {
-				num_cola:=0
+				//num_cola:=0
 				for msg := range msgs {
 					fmt.Printf("Received Message: %s\n", msg.Body)
 					subcadenas := strings.Split(string(msg.Body), "-")
@@ -164,19 +164,19 @@ func main() {
 					if  subcadenas[0] == "Asia" {
 						wg.Add(1)
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
-						num_cola++
+						forever <- true
 						
 					}else if subcadenas[0] == "America"{
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"America", &wg)
-						num_cola++
+						forever <- true
 					} else if subcadenas[0] == "Europa"{
 
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Europa", &wg)
-						num_cola++
+						forever <- true
 					} else if subcadenas[0] == "Oceania"{
 
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Oceania", &wg)
-						num_cola++
+						forever <- true
 					}else{
 						fmt.Printf("No entre a ningun if")
 					}
@@ -184,10 +184,7 @@ func main() {
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
 
 					
-					if num_cola == 1{
-						wg.Wait()
-						forever <- true
-					}
+					
 				}
 				time.Sleep(5 * time.Second)
 				
