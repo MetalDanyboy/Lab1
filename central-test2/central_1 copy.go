@@ -208,7 +208,7 @@ func main() {
 					}
 
 					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
-					go ConexionGRPC2(strconv.Itoa(llaves_pedidas),subcadenas[0])
+					go ConexionGRPC2(llaves_pedidas,subcadenas[0])
 					forever <- true
 					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
 
