@@ -139,6 +139,7 @@ func main() {
 	var llaves int
 	for {
 		llaves= rand.Intn(max-min) + min
+		fmt.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
 		contador++
 		if iterations == -1 {
 			fmt.Printf("Generación %d/infinito\n", contador)
