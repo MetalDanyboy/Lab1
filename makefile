@@ -2,7 +2,7 @@ clean:
 	./clean.sh
 
 docker-central:
-ifeq ($(HOST),dist105)
+ifeq ($(HOST),localhost)
 	docker run -d -it --name central -p 50052:50052 --expose 50052 lab1:latest go run Central/main.go
 else
 	echo "Ejecutar SOLO en dist105"
