@@ -98,8 +98,18 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 }
 
 func main() {
+	
 
-	content, err := os.ReadFile("/Lab1/Regionales/Asia/'parametros de inicio.txt'")
+	directorioActual, err := os.Getwd()
+    if err != nil {
+        fmt.Println("Error al obtener el directorio actual:", err)
+        return
+    }
+
+    fmt.Println("Directorio actual:", directorioActual)
+	}
+
+	content, err := os.ReadFile("Lab1/Regionales/Asia/'parametros de inicio.txt'")
 	if err != nil {
 		log.Fatal(err)
 	}
