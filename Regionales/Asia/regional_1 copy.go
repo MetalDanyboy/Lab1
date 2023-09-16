@@ -76,9 +76,16 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 	return &pb.Message{Body: "OK"}, nil
 }
 
+func(s *Server) SendKeys(ctx context.Context, in *pb.NumberRequest) (*pb.NumberResponse, error) {
+	log.Printf("Receive Keys from client: %s", in.Number)
+	cant_registrados-=int(in.Number)
+	return &pb.NumberResponse{Response: "OK"}, nil
+
+}
+
 func main() {
 	
-	
+	//rand.Seed(time.Now().UnixNano())
 	directorioActual, err := os.Getwd()
     if err != nil {
         fmt.Println("Error al obtener el directorio actual:", err)

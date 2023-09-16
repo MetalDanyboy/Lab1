@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func ConexionGRPC2(mensaje string, servidor string){
+func ConexionGRPC2(keys int, servidor string){
 	
 	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
 	//host :="localhost"
@@ -50,15 +50,15 @@ func ConexionGRPC2(mensaje string, servidor string){
 
 	c := pb.NewChatServiceClient(conn)
 	for {
-		log.Println("Sending message to server "+nombre+": "+mensaje)
-		response, err := c.SayHello(context.Background(), &pb.Message{Body: mensaje})
+		log.Println("Sending message to server "+nombre+": "+strconv.Itoa(keys))
+		response, err := c.SendKeys(context.Background(), &pb.NumberRequest{Number: int32(keys)})
 		if err != nil {
 			log.Println("Server "+nombre+" not responding: ")
 			log.Println("Trying again in 10 seconds. . .")
 			time.Sleep(10 * time.Second)
 			continue
 		}
-		log.Printf("Response from server "+nombre+": "+"%s", response.Body)
+		log.Printf("Response from server "+nombre+": "+"%s", response.Response)
 		break
 	}
 }

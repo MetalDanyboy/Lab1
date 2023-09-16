@@ -17,8 +17,5 @@ message NumberResponse{
 
 service ChatService {
   rpc SayHello(Message) returns (Message) {}
-}
-
-service NumberService {
   rpc SendKeys(NumberRequest) returns (NumberResponse) {}
 }
