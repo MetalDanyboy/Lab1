@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"strings"
 
 	pb "github.com/MetalDanyboy/Lab1/protos"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -100,8 +101,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	cant_registrados, _= strconv.Atoi(string(content))
-	fmt.Printf("\n--->Cantidad de registrados: %d",cant_registrados)
+	strContent := strings.TrimSpace(string(content))
+	cant_registrados, _= strconv.Atoi(string(strContent))
+	fmt.Printf("\n--->Cantidad de registrados: %d\n",cant_registrados)
 	cant_llaves_pedidas=0
 
 	server_name = "Asia"
