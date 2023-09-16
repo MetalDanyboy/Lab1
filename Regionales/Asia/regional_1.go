@@ -29,12 +29,9 @@ func Pedir_LLaves(cant_inicial int, cant_pedidas int)(int){
 		if cant_pedidas == 0{
 			num := int(cant_inicial/2)
 			p := int(num/5)
-
-			log.Printf("num: %d, p: %d", num, p)
 			llaves_a_pedir := rand.Intn((num+p)-(num-p)) + (num - p)
 	
 			cant_llaves_pedidas=llaves_a_pedir
-			log.Printf("llaves_a_pedir: %d, cant_llaves_pedidas: %d", llaves_a_pedir, cant_llaves_pedidas)
 			return llaves_a_pedir
 		}else{
 			num := int(cant_inicial/2)
@@ -54,11 +51,8 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 
 	// Enviamos un mensaje a RabbitMQ
 	inMessage:=string(in.Body)
-	fmt.Println("inMessage-->"+inMessage)
 	if inMessage == "LLaves Disponibles"{
-		log.Printf("en el IF inMessage-->llaves_pedidas: %d", cant_llaves_pedidas)
 		llaves_pedidas:=Pedir_LLaves(cant_registrados,0)
-		fmt.Println("llaves_pedidas-->"+strconv.Itoa(llaves_pedidas))
 		err := s.channel.Publish(
 			"",        // exchange
 			"testing", // key
@@ -67,7 +61,8 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 			amqp.Publishing{
 				ContentType: "text/plain",
 				//Body:        []byte(server_name+"-"+string(cant_llaves_pedidas)),
-				Body:       []byte(server_name+"-"+strconv.Itoa(llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+				Body:       []byte(server_name+"-"+strconv.Itoa(llaves_pedidas)),
+				 // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
 			},
 		)
 		fmt.Println("Mande "+strconv.Itoa(llaves_pedidas)+" llaves")
@@ -103,15 +98,11 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 
 func main() {
 	
-	log.Printf("cant_llaves_pedidas: %d", cant_llaves_pedidas)
 	directorioActual, err := os.Getwd()
     if err != nil {
         fmt.Println("Error al obtener el directorio actual:", err)
         return
     }
-
-	
-
 	content, err := os.ReadFile(directorioActual+"/Regionales/Asia/parametros_de_inicio.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -121,13 +112,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("\n--->Cantidad de registrados: %d\n",cant_registrados)
-	cant_llaves_pedidas=0
-	fmt.Println("Pedir llaves:",Pedir_LLaves(cant_registrados,0))
-	cant_llaves_pedidas=Pedir_LLaves(cant_registrados,0)
-	fmt.Println("cant_llaves_pedidas: ",cant_llaves_pedidas)
-
-
+	
+	
 	server_name = "Asia"
 	addr_Rabbit := "dist106.inf.santiago.usm.cl"
 	connection, err := amqp.Dial("amqp://guest:guest@" + addr_Rabbit + ":5672/")

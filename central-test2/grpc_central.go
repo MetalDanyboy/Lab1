@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/rand"
+	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -66,6 +69,27 @@ func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 }
 
 func main() {
+
+	directorioActual, err := os.Getwd()
+    if err != nil {
+        fmt.Println("Error al obtener el directorio actual:", err)
+        return
+    }
+	content, err := os.ReadFile(directorioActual+"/Regionales/Asia/parametros_de_inicio.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	lineas := strings.Split(string(content), "\n")
+    rangoLlaves := strings.Split(lineas[0], "-")
+
+	var min, max , iterations, contador int
+    min, _= strconv.Atoi(rangoLlaves[0])
+    max, _= strconv.Atoi(rangoLlaves[1])
+    iterations, _= strconv.Atoi(lineas[1])
+
+	
+
 	log.Println("Starting Central. . .\n")
 	//"localhost:50052"
 	//"host.docker.internal:50052"
@@ -115,35 +139,103 @@ func main() {
 	}
 	// ...
 	
-	//Mensaje Rabbit
-	forever := make(chan bool)
-	go func() {
-		for msg := range msgs {
-			fmt.Printf("Received Message: %s\n", msg.Body)
-			subcadenas := strings.Split(string(msg.Body), "-")
-			
-			if  subcadenas[0] == "Asia" {
-				fmt.Printf("Entre a Asia\n")
-				wg.Add(1)
-				ConexionGRPC("200","Asia", &wg)
-				
-			}else if subcadenas[0] == "America"{
+	var llaves int
+	for {
+		llaves= rand.Intn(max-min) + min
+		contador++
+		if iterations == -1 {
+			fmt.Printf("Generación %d/infinito\n", contador)
+			//Mensaje Rabbit
+			forever := make(chan bool)
+			go func() {
+				num_cola:=0
+				for msg := range msgs {
+					fmt.Printf("Received Message: %s\n", msg.Body)
+					subcadenas := strings.Split(string(msg.Body), "-")
+					
+					llaves_pedidas,_:=strconv.Atoi(subcadenas[1])
+					llaves-=llaves_pedidas
+					if llaves <=0 {
+						return
+					}
+					if  subcadenas[0] == "Asia" {
+						wg.Add(1)
+						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
+						
+					}else if subcadenas[0] == "America"{
+						ConexionGRPC(strconv.Itoa(llaves_pedidas),"America", &wg)
+					} else if subcadenas[0] == "Europa"{
 
-				ConexionGRPC("200","America", &wg)
-			} else if subcadenas[0] == "Europa"{
+						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Europa", &wg)
+					} else if subcadenas[0] == "Oceania"{
 
-				ConexionGRPC("200","Europa", &wg)
-			} else if subcadenas[0] == "Oceania"{
+						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Oceania", &wg)
+					}else{
+						fmt.Printf("No entre a ningun if")
+					}
 
-				ConexionGRPC("200","Oceania", &wg)
-			}else{
-				fmt.Printf("No entre a ningun if")
+
+					num_cola++
+					fmt.Println(num_cola)
+				}
+				time.Sleep(5 * time.Second)
+				if num_cola == 4{
+					forever <- false
+				}
+			}()
+			fmt.Println("Waiting for messages...")
+			<-forever
+
+		}else {
+			fmt.Printf("Generación %d/%d\n", contador, iterations)
+			//Mensaje Rabbit
+			forever := make(chan bool)
+			go func() {
+				num_cola:=0
+				for msg := range msgs {
+					fmt.Printf("Received Message: %s\n", msg.Body)
+					subcadenas := strings.Split(string(msg.Body), "-")
+					
+					llaves_pedidas,_:=strconv.Atoi(subcadenas[1])
+					
+					if llaves_pedidas > llaves{
+						llaves_pedidas=llaves
+					}
+					llaves-=llaves_pedidas
+
+					if  subcadenas[0] == "Asia" {
+						fmt.Printf("Entre a Asia\n")
+						wg.Add(1)
+						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
+						
+					}else if subcadenas[0] == "America"{
+
+						ConexionGRPC(strconv.Itoa(llaves_pedidas),"America", &wg)
+					} else if subcadenas[0] == "Europa"{
+
+						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Europa", &wg)
+					} else if subcadenas[0] == "Oceania"{
+
+						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Oceania", &wg)
+					}else{
+						fmt.Printf("No entre a ningun if")
+					}
+					num_cola++
+				}
+				time.Sleep(5 * time.Second)
+				if num_cola == 4{
+					forever <- false
+				}
+			}()
+			fmt.Println("Waiting for messages...")
+			<-forever
+
+			if contador >= iterations{
+				break
 			}
 		}
-		time.Sleep(5 * time.Second)
-	}()
-	fmt.Println("Waiting for messages...")
-	<-forever
+	}
+	
 
 	
 	
