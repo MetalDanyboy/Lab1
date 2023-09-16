@@ -79,7 +79,12 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 func main() {
 	
 	
-	content, err := os.ReadFile("parametros_de_inicio.txt")
+	directorioActual, err := os.Getwd()
+    if err != nil {
+        fmt.Println("Error al obtener el directorio actual:", err)
+        return
+    }
+    content, err := os.ReadFile(directorioActual+"/Regionales/Asia/parametros_de_inicio.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,7 +97,8 @@ func main() {
 	
 	
 	server_name = "Asia"
-	addr_Rabbit := "localhost"
+	//addr_Rabbit := "localhost"
+	addr_Rabbit := "dist106.inf.santiago.usm.cl"
 	connection, err := amqp.Dial("amqp://guest:guest@" + addr_Rabbit + ":5672/")
 	if err != nil {
 		panic(err)
