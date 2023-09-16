@@ -20,23 +20,23 @@ import (
 func ConexionGRPC2(mensaje string, servidor string){
 	
 	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
-	host :="localhost"
-	var puerto, nombre string
+	//host :="localhost"
+	var puerto, nombre, host string
 	
 	if servidor == "America"{
-		//host :="dist105.inf.santiago.usm.cl"
+		host ="dist105.inf.santiago.usm.cl"
 		puerto ="50052"
 		nombre ="America"
 	}else if servidor == "Asia"{
-		//host :="dist106.inf.santiago.usm.cl"
+		host ="dist106.inf.santiago.usm.cl"
 		puerto ="50053"
 		nombre ="Asia"
 	}else if servidor == "Europa"{
-		//host="dist107.inf.santiago.usm.cl"
+		host ="dist107.inf.santiago.usm.cl"
 		puerto ="50054"
 		nombre ="Europa"
 	}else if servidor == "Oceania"{
-		//host="dist108.inf.santiago.usm.cl"
+		host ="dist108.inf.santiago.usm.cl"
 		puerto ="50055"
 		nombre ="Oceania"
 	}
@@ -66,23 +66,23 @@ func ConexionGRPC2(mensaje string, servidor string){
 func ConexionGRPC(mensaje string, servidor string , wg *sync.WaitGroup){
 	
 	//Uno de estos debe cambiar quizas por "regional:50052" ya que estara en la misma VM que el central
-	host :="localhost"
-	var puerto, nombre string
+	//host :="localhost"
+	var puerto, nombre, host string
 	
 	if servidor == "America"{
-		//host :="dist105.inf.santiago.usm.cl"
+		host ="dist105.inf.santiago.usm.cl"
 		puerto ="50052"
 		nombre ="America"
 	}else if servidor == "Asia"{
-		//host :="dist106.inf.santiago.usm.cl"
+		host ="dist106.inf.santiago.usm.cl"
 		puerto ="50053"
 		nombre ="Asia"
 	}else if servidor == "Europa"{
-		//host="dist107.inf.santiago.usm.cl"
+		host="dist107.inf.santiago.usm.cl"
 		puerto ="50054"
 		nombre ="Europa"
 	}else if servidor == "Oceania"{
-		//host="dist108.inf.santiago.usm.cl"
+		host="dist108.inf.santiago.usm.cl"
 		puerto ="50055"
 		nombre ="Oceania"
 	}
@@ -129,8 +129,8 @@ func main() {
 
 
 	//...CONEXION RABBITMQ...
-	//addr := "dist106.inf.santiago.usm.cl"
-	addr :="localhost"
+	addr := "dist106.inf.santiago.usm.cl"
+	//addr :="localhost"
 	connection, err := amqp.Dial("amqp://guest:guest@"+addr+":5672/")
 	if err != nil {
 		panic(err)
