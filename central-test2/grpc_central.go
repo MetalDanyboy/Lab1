@@ -177,7 +177,7 @@ func main() {
 
 
 					num_cola++
-					if num_cola == 1{
+					if num_cola == 4{
 					
 						break
 					}
@@ -208,7 +208,6 @@ func main() {
 					}
 
 					if  subcadenas[0] == "Asia" {
-						fmt.Printf("Entre a Asia\n")
 						wg.Add(1)
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
 						
@@ -225,7 +224,7 @@ func main() {
 						fmt.Printf("No entre a ningun if")
 					}
 					num_cola++
-					if num_cola == 1{
+					if num_cola == 4{
 						
 						break
 					}
