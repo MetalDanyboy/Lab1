@@ -56,6 +56,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 	inMessage:=string(in.Body)
 	fmt.Println("inMessage-->"+inMessage)
 	if inMessage == "LLaves Disponibles"{
+		log.Printf("en el IF inMessage-->cant_llaves_pedidas: %d", cant_llaves_pedidas)
 		cant_llaves_pedidas=Pedir_LLaves(cant_registrados,0)
 		fmt.Println("cant_llaves_pedidas-->"+string(cant_llaves_pedidas))
 		err := s.channel.Publish(
