@@ -75,7 +75,7 @@ func main() {
         fmt.Println("Error al obtener el directorio actual:", err)
         return
     }
-	content, err := os.ReadFile(directorioActual+"/Regionales/Asia/parametros_de_inicio.txt")
+	content, err := os.ReadFile(directorioActual+"/central-test2/parametros_de_inicio.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -158,7 +158,7 @@ func main() {
 						llaves_pedidas=llaves
 					}
 					llaves-=llaves_pedidas
-					
+
 					if  subcadenas[0] == "Asia" {
 						wg.Add(1)
 						ConexionGRPC(strconv.Itoa(llaves_pedidas),"Asia", &wg)
