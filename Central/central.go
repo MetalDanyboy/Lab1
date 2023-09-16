@@ -188,7 +188,7 @@ func main() {
 			wg.Wait()
 		
 			llaves= rand.Intn(max-min) + min
-			fmt.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
+			log.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
 			
 			if iterations == -1 {
 				fmt.Printf("Generación %d/infinito\n", contador)
