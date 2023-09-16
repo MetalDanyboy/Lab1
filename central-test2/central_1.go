@@ -159,7 +159,7 @@ func main() {
 						llaves-=llaves_pedidas
 					}
 
-					fmt.Printf("Mensaje asíncrono de servidor %s leído", subcadenas[0])
+					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
 
 					if  subcadenas[0] == "Asia" {
 						wg.Add(1)
@@ -177,7 +177,7 @@ func main() {
 						fmt.Printf("No entre a ningun if")
 					}
 
-					fmt.Printf("Se inscribieron %d cupos de servidor %s", llaves_pedidas, subcadenas[0])
+					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
 
 					num_cola++
 					if num_cola == 1{
@@ -210,7 +210,7 @@ func main() {
 						llaves-=llaves_pedidas
 					}
 
-					fmt.Printf("Mensaje asíncrono de servidor %s leído", subcadenas[0])
+					fmt.Printf("Mensaje asíncrono de servidor %s leído\n", subcadenas[0])
 
 					if  subcadenas[0] == "Asia" {
 						wg.Add(1)
@@ -229,7 +229,7 @@ func main() {
 						fmt.Printf("No entre a ningun if")
 					}
 
-					fmt.Printf("Se inscribieron %d cupos de servidor %s", llaves_pedidas, subcadenas[0])
+					fmt.Printf("Se inscribieron %d cupos de servidor %s\n", llaves_pedidas, subcadenas[0])
 					
 					num_cola++
 					if num_cola == 1{
