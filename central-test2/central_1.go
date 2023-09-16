@@ -188,6 +188,13 @@ func main() {
 	
 	var llaves int
 	for {
+		var wg sync.WaitGroup
+		wg.Add(1)
+		go ConexionGRPC("LLaves Disponibles","America", &wg)
+		wg.Add(1)
+		go ConexionGRPC("LLaves Disponibles","Asia", &wg)
+		wg.Wait()
+		
 		llaves= rand.Intn(max-min) + min
 		fmt.Printf("\n\nLlaves disponibles: %d\n\n", llaves)
 		contador++
