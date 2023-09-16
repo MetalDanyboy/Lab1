@@ -176,9 +176,14 @@ func main() {
 			}
 			var wg sync.WaitGroup
 			wg.Add(1)
+			go ConexionGRPC("LLaves Disponibles","America", &wg)
+			wg.Add(1)
 			go ConexionGRPC("LLaves Disponibles","Asia", &wg)
+			wg.Wait()
 			wg.Add(1)
 			go ConexionGRPC("LLaves Disponibles","Europa", &wg)
+			wg.Add(1)
+			go ConexionGRPC("LLaves Disponibles","Oceania", &wg)
 			wg.Wait()
 		
 			llaves= rand.Intn(max-min) + min
