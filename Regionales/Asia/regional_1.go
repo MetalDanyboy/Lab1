@@ -49,7 +49,8 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 	log.Printf("Receive message body from client: %s", in.Body)
 
 	// Enviamos un mensaje a RabbitMQ
-	if in.Body == "LLaves Disponibles"{
+	inMessage:=string(in.Body)
+	if inMessage == "LLaves Disponibles"{
 		cant_llaves_pedidas=Pedir_LLaves(cant_registrados,0)
 		err := s.channel.Publish(
 			"",        // exchange
@@ -66,7 +67,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 		if err != nil {
 			log.Printf("Error al publicar en RabbitMQ: %s", err)
 		}
-	}else if in.Body != "LLaves Disponibles"{
+	}else if inMessage != "LLaves Disponibles"{
 		registrados , _ := strconv.Atoi(in.Body)
 		cant_registrados-=registrados
 		if cant_registrados <= 0{
@@ -100,6 +101,7 @@ func main() {
 		log.Fatal(err)
 	}
 	cant_registrados, _= strconv.Atoi(string(content))
+	fmt.Printf("\n--->Cantidad de registrados: %d",cant_registrados)
 	cant_llaves_pedidas=0
 
 	server_name = "Asia"
