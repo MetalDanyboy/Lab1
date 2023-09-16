@@ -88,10 +88,10 @@ func (s *Server) SayHello(ctx context.Context, in *pb.Message) (*pb.Message, err
 				false,     // immediate
 				amqp.Publishing{
 					ContentType: "text/plain",
-					Body:        []byte(server_name+"-"+string(cant_llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
+					Body:        []byte(server_name+"-"+strconv.Itoa(cant_llaves_pedidas)), // Enviamos el cuerpo del mensaje gRPC a RabbitMQ
 				},
 			)
-			fmt.Println("Mande "+string(cant_llaves_pedidas)+" llaves")
+			fmt.Println("Mande "+strconv.Itoa(cant_llaves_pedidas)+" llaves")
 			if err != nil {
 				log.Printf("Error al publicar en RabbitMQ: %s", err)
 			}
