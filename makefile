@@ -5,7 +5,7 @@ build:
 	docker build -t lab1:latest .
 docker-central:
 ifeq ($(HOST),localhost)
-	docker run -d -it --name central -p 50052:50052 --expose 50052 lab1:latest go run Central/main.go
+	docker run -d -it --name central --expose 50052 lab1:latest go run Central/main.go
 else
 	echo "Ejecutar SOLO en dist105"
 endif
